@@ -1,0 +1,75 @@
+qa_report_version: 1
+
+journal: null
+issue: null
+status: null # ready | ready_with_warnings | not_ready
+
+summary:
+  articles_checked: 0
+  blockers: 0
+  warnings: 0
+  informational: 0
+
+issue_checks:
+  - check: volume
+    status: null # pass | warning | fail | not_applicable
+    value: null
+    source: null
+    note: null
+  - check: issue_number
+    status: null
+    value: null
+    source: null
+    note: null
+  - check: year
+    status: null
+    value: null
+    source: null
+    note: null
+  - check: publication_date
+    status: null
+    value: null
+    source: null
+    note: null
+  - check: description
+    status: null
+    value: null
+    source: null
+    note: null
+  - check: cover
+    status: null
+    value: null
+    source: null
+    note: null
+
+article_checks: []
+
+cross_article_checks:
+  - check: pagination_overlap
+    status: null
+    note: null
+  - check: pagination_gap
+    status: null
+    note: null
+  - check: volume_issue_consistency
+    status: null
+    note: null
+  - check: publication_date_consistency
+    status: null
+    note: null
+  - check: licence_consistency
+    status: null
+    note: null
+  - check: journal_name_consistency
+    status: null
+    note: null
+
+conflicts: []
+
+missing_required_fields: []
+
+warnings: []
+
+provenance: []
+
+editorial_actions_required: []

@@ -1,0 +1,254 @@
+profile_version: 1
+
+journal:
+  name: null
+  abbreviation: null
+  publisher: null
+  website: null
+  issn_print: null
+  issn_online: null
+  doi_prefix: null
+  languages: []
+
+publication:
+  model: null # volume_issue | continuous | annual | other
+  frequency: null
+  uses_volume: null
+  uses_issue_number: null
+  uses_year: true
+  pagination: null # page_range | article_number | elocation | none
+  issue_url_pattern: null
+  article_url_pattern: null
+
+sections: []
+
+contacts:
+  editorial: null
+  submissions: null
+  production: null
+  support: null
+  general: null
+  copyright_licensing: null
+  technical: null
+
+rights:
+  copyright_holder: null
+  licence_name: null
+  licence_short_name: null
+  licence_url: null
+  journal_policy_overrides_article_text: false
+
+source_priority:
+  - current_official_website
+  - current_journal_setup_document
+  - final_published_article_or_issue
+  - current_submission_guidelines
+  - final_accepted_manuscript
+  - submission_metadata
+  - user_preference
+
+extraction:
+  mode: clean # strict | clean | copyedited | hybrid
+  silently_reconcile_conflicts: false
+  remove_ocr_duplicates: true
+  repair_layout_hyphenation: true
+  preserve_authored_grammar: true
+  provenance_tracking: true
+
+missing_values:
+  default: flag # blank | not_stated | flag | ask | generate_if_allowed
+
+output:
+  mode: compact # compact | standard | detailed | audit
+  html: plain_text # plain_text | ojs_html | both
+  keyword_separator: comma # comma | semicolon | line
+
+quicksubmit:
+  preserve_interface_order: true
+  fields:
+    section:
+      enabled: true
+      policy: extract_or_flag
+    prefix:
+      enabled: false
+      policy: extract_or_blank
+    title:
+      enabled: true
+      policy: extract_only
+    subtitle:
+      enabled: false
+      policy: extract_or_blank
+    abstract:
+      enabled: true
+      policy: extract_only
+    coverage_information:
+      enabled: false
+      policy: ignore
+    type:
+      enabled: true
+      policy: extract_or_flag
+    source:
+      enabled: false
+      policy: extract_or_blank
+    rights:
+      enabled: true
+      policy: extract_or_flag
+    data_availability_statement:
+      enabled: true
+      policy: extract_or_flag
+    subjects:
+      enabled: false
+      policy: ignore
+    disciplines:
+      enabled: false
+      policy: ignore
+    keywords:
+      enabled: true
+      policy: extract_only
+    supporting_agencies:
+      enabled: true
+      policy: extract_or_blank
+    references:
+      enabled: true
+      policy: extract_only
+
+authors:
+  fields:
+    given_name: true
+    middle_name: false
+    family_name: true
+    preferred_public_name: false
+    email: true
+    orcid: true
+    affiliation: true
+    department: false
+    institution: false
+    city: false
+    state_region: false
+    country: true
+    biography: false
+    corresponding_author: true
+    principal_contact: false
+    phone: false
+  ambiguous_name_split: flag
+
+article_history:
+  received: true
+  revised: true
+  accepted: true
+  published: true
+  version_date: false
+
+article_declarations:
+  data_availability:
+    enabled: true
+    policy: extract_or_flag
+  funding:
+    enabled: true
+    policy: extract_or_blank
+  competing_interests:
+    enabled: false
+    policy: extract_or_blank
+  ethics:
+    enabled: false
+    policy: extract_or_blank
+  consent_for_publication:
+    enabled: false
+    policy: extract_or_blank
+  author_contributions:
+    enabled: false
+    policy: extract_or_blank
+  acknowledgements:
+    enabled: false
+    policy: extract_or_blank
+  trial_registration:
+    enabled: false
+    policy: extract_or_blank
+
+references:
+  mode: clean # exact | clean | normalize | validate
+  style: null
+  search_missing_dois: false
+  validate_numbering: true
+  detect_duplicates: true
+
+issue:
+  fields:
+    date_published:
+      enabled: true
+      policy: extract_or_flag
+    volume:
+      enabled: true
+      policy: extract_or_flag
+    number:
+      enabled: true
+      policy: extract_or_flag
+    year:
+      enabled: true
+      policy: extract_or_flag
+    title:
+      enabled: false
+      policy: generate_if_missing
+    description:
+      enabled: true
+      policy: generate_if_missing
+    cover_brief:
+      enabled: true
+      policy: generate_if_missing
+    url_path:
+      enabled: true
+      policy: generate_if_missing
+    doi:
+      enabled: false
+      policy: extract_or_blank
+    seo_description:
+      enabled: false
+      policy: generate_if_missing
+  description_length: standard # short | standard | detailed | custom
+  description_custom_words: null
+  require_whole_issue_synthesis: true
+
+html:
+  allow_inline_css: true
+  font_family: "Helvetica, Arial, sans-serif"
+  font_size: "0.95rem"
+  line_height: 1.7
+  text_color: "#333333"
+  justify_paragraphs: true
+  allow_tables: true
+  allow_external_fonts: false
+  allow_javascript: false
+  format_scientific_names: true
+  format_chemical_notation: true
+
+qa:
+  blockers:
+    missing_required_title: true
+    missing_required_author: true
+    unresolved_page_overlap: true
+    missing_required_rights: false
+    unresolved_volume_issue_conflict: true
+  warnings:
+    title_mismatch: true
+    author_name_mismatch: true
+    author_order_mismatch: true
+    corresponding_author_mismatch: true
+    abstract_mismatch: true
+    scientific_value_conflict: true
+    organism_inconsistency: true
+    abbreviation_inconsistency: true
+    licence_text_url_mismatch: true
+    journal_url_mismatch: true
+    page_gap: true
+    duplicate_pagination: true
+    article_type_mismatch: true
+    malformed_reference: true
+    missing_required_declaration: true
+    doi_format_mismatch: true
+    publication_date_conflict: true
+
+profile_state:
+  status: provisional # provisional | confirmed
+  detected_from: []
+  unresolved_questions: []
+  conflicts: []

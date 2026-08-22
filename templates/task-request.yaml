@@ -1,0 +1,38 @@
+task_version: 1
+
+task:
+  type: null # prepare_issue | quicksubmit_single | quicksubmit_batch | extract_article_metadata | extract_authors | extract_declarations | prepare_references | validate_metadata | generate_issue_description | generate_issue_cover_brief | style_ojs_html | production_qa | prepare_doi_metadata | full_production_workflow
+  journal_profile: null
+
+sources:
+  files: []
+  website: null
+  notes: null
+
+overrides:
+  extraction_mode: null # strict | clean | copyedited | hybrid
+  output_mode: null # compact | standard | detailed | audit
+  html_output: null # plain_text | ojs_html | both
+  include_fields: []
+  exclude_fields: []
+  missing_value_behavior: null # blank | not_stated | flag | ask | generate_if_allowed
+  allow_generation_for: []
+  forbid_generation_for: []
+
+issue:
+  description_length: null # short | standard | detailed | custom
+  description_custom_words: null
+  issue_title_generation: null
+  cover_brief_generation: null
+
+references:
+  mode: null # exact | clean | normalize | validate
+  style: null
+  search_missing_dois: null
+
+validation:
+  run_after_extraction: true
+  show_warnings: true
+  show_provenance: false
+
+user_instruction: null

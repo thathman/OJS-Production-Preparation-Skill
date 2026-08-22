@@ -1,0 +1,93 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.org/ojs-production/extraction-record.schema.json",
+  "title": "OJS Production Extraction Record",
+  "type": "object",
+  "required": ["record_type", "status", "fields", "warnings"],
+  "properties": {
+    "record_type": {
+      "type": "string",
+      "enum": ["journal_profile", "issue", "article", "author", "qa_report"]
+    },
+    "status": {
+      "type": "string",
+      "enum": ["provisional", "confirmed", "ready", "ready_with_warnings", "not_ready"]
+    },
+    "source_mode": {
+      "type": "string",
+      "enum": ["strict", "clean", "copyedited", "hybrid"]
+    },
+    "fields": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/$defs/fieldRecord"
+      }
+    },
+    "warnings": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/warningRecord"
+      }
+    },
+    "sources": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/sourceRecord"
+      }
+    }
+  },
+  "$defs": {
+    "fieldRecord": {
+      "type": "object",
+      "required": ["value", "origin", "confidence"],
+      "properties": {
+        "value": {},
+        "origin": {
+          "type": "string",
+          "enum": ["exact", "cleaned", "inferred", "generated", "user_confirmed"]
+        },
+        "confidence": {
+          "type": "string",
+          "enum": ["high", "medium", "low", "not_applicable"]
+        },
+        "source_refs": {
+          "type": "array",
+          "items": {"type": "string"}
+        },
+        "conflict": {"type": "boolean"},
+        "notes": {"type": ["string", "null"]}
+      }
+    },
+    "warningRecord": {
+      "type": "object",
+      "required": ["code", "severity", "message"],
+      "properties": {
+        "code": {"type": "string"},
+        "severity": {
+          "type": "string",
+          "enum": ["info", "warning", "blocking"]
+        },
+        "message": {"type": "string"},
+        "field": {"type": ["string", "null"]},
+        "source_refs": {
+          "type": "array",
+          "items": {"type": "string"}
+        }
+      }
+    },
+    "sourceRecord": {
+      "type": "object",
+      "required": ["id", "type", "label"],
+      "properties": {
+        "id": {"type": "string"},
+        "type": {
+          "type": "string",
+          "enum": ["website", "pdf", "docx", "spreadsheet", "image", "xml", "csv", "text", "other"]
+        },
+        "label": {"type": "string"},
+        "location": {"type": ["string", "null"]},
+        "authority_rank": {"type": ["integer", "null"], "minimum": 1}
+      }
+    }
+  }
+}

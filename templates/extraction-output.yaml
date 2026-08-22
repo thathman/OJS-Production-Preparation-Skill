@@ -1,0 +1,53 @@
+record_type: article
+status: provisional
+source_mode: clean
+
+sources:
+  - id: src-1
+    type: pdf
+    label: article.pdf
+    location: null
+    authority_rank: 1
+
+fields:
+  title:
+    value: null
+    origin: exact
+    confidence: high
+    source_refs: [src-1]
+    conflict: false
+    notes: null
+
+  section:
+    value: null
+    origin: exact
+    confidence: medium
+    source_refs: [src-1]
+    conflict: false
+    notes: null
+
+  abstract:
+    value: null
+    origin: cleaned
+    confidence: high
+    source_refs: [src-1]
+    conflict: false
+    notes: "Layout/OCR cleanup only; authored wording preserved."
+
+  keywords:
+    value: []
+    origin: exact
+    confidence: high
+    source_refs: [src-1]
+    conflict: false
+    notes: null
+
+  rights:
+    value: null
+    origin: exact
+    confidence: medium
+    source_refs: [src-1]
+    conflict: false
+    notes: null
+
+warnings: []
