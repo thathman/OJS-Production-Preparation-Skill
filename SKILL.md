@@ -22,7 +22,7 @@ On first use for a journal, do not begin with a full questionnaire. Ask the user
 - production spreadsheets
 - logos or branding files
 
-If the user has already supplied one or more useful sources, inspect those immediately instead of asking for them again.
+If the user has already supplied useful sources, inspect those immediately instead of asking for them again.
 
 ## Scope
 
@@ -30,19 +30,22 @@ The skill may assist with:
 
 1. Journal profile detection
 2. OJS issue preparation
-3. QuickSubmit preparation
-4. Article metadata extraction
-5. Author metadata extraction
-6. Article history extraction
-7. Declarations and funding extraction
-8. Reference preparation
-9. Rights and licence preparation
-10. OJS-safe HTML formatting
-11. Issue description and summary generation
-12. Issue cover briefs
-13. Production quality assurance
-14. Cross-article consistency checks
-15. Final publication readiness review
+3. Issue Data preparation
+4. Issue Galley preparation
+5. Issue identifier preparation
+6. QuickSubmit preparation
+7. Article metadata extraction
+8. Author metadata extraction
+9. Article history extraction
+10. Declarations and funding extraction
+11. Reference preparation
+12. Rights and licence preparation
+13. OJS-safe HTML formatting
+14. Issue description and summary generation
+15. Issue cover briefs
+16. Production quality assurance
+17. Cross-article consistency checks
+18. Final publication readiness review
 
 ## Journal-agnostic behaviour
 
@@ -61,6 +64,9 @@ Never assume a particular journal's:
 - contact routing
 - reference style
 - copyright ownership
+- issue URL path convention
+- issue galley label or URL path convention
+- Publisher ID usage or pattern
 
 These must be detected from sources or confirmed by the user.
 
@@ -68,13 +74,7 @@ These must be detected from sources or confirmed by the user.
 
 ### 1. Collect sources
 
-If sufficient sources are not already present, ask for the available journal materials first.
-
-Recommended opening instruction:
-
-> Upload or provide whatever you have for the journal first. This may include the journal website, sample published articles, a complete issue, submission guidelines, policy/setup documents, production spreadsheets, or branding files. I will inspect these first, build a provisional journal profile automatically, and only ask about information I cannot determine confidently.
-
-Do not insist that every source type is provided.
+If sufficient sources are not already present, ask for the available journal materials first. Do not insist that every source type is provided.
 
 ### 2. Inspect sources
 
@@ -131,6 +131,18 @@ Only retain sections actually supported by the journal sources.
 - supporting agencies
 - references
 - other custom metadata
+
+#### Issue conventions
+- Date Published pattern
+- Volume/Number/Year/Title format
+- issue description style
+- cover-image use and alternate-text convention
+- Issue Data URL Path pattern
+- Issue Galley label pattern
+- Issue Galley URL Path pattern
+- whether Publisher IDs are used for issues
+- whether Publisher IDs are used for issue galleys
+- Publisher ID patterns when present
 
 #### Author metadata conventions
 - given name
@@ -200,16 +212,6 @@ Each detected value should have:
 - confidence: `high`, `medium`, or `low`
 - conflict status
 
-Example:
-
-```text
-Licence
-Detected: CC BY-NC 4.0
-Confidence: Medium
-Source: Open Access page
-Conflict: Sample article PDF says CC BY 4.0
-```
-
 ### 4. Ask only the gap questionnaire
 
 After detection, ask only about:
@@ -220,8 +222,13 @@ After detection, ask only about:
 - user preferences that cannot be inferred
 - fields to include or ignore
 - fields that may be editorially generated
+- whether the journal uses an issue-level Publisher ID if this cannot be detected
+- whether the journal uses an Issue Galley Publisher ID if this cannot be detected
+- the Publisher ID value or pattern only where its use is confirmed and cannot be inferred reliably
 
 Do not ask the user to confirm every high-confidence value unless they request a full profile review.
+
+Publisher ID questions are conditional. Issue-level Publisher ID and Issue Galley Publisher ID are separate fields; never infer one from the existence of the other.
 
 ## Source authority and conflicts
 
@@ -244,18 +251,10 @@ Do not silently change scientific content because one source appears more plausi
 The profile must support these modes:
 
 ### `strict`
-Extract exactly what appears in the source. Preserve grammar, spelling, capitalization, and wording. Do not normalize content.
+Extract exactly what appears in the source. Preserve grammar, spelling, capitalization and wording. Do not normalize content.
 
 ### `clean`
-Default recommended production mode. Remove OCR duplication, broken line wraps, repeated headers/footers, and obvious layout artefacts without changing authored wording.
-
-Allowed example:
-
-`neurobehav- ioral` -> `neurobehavioral`
-
-Not allowed without copyediting permission:
-
-`randomly assign` -> `randomly assigned`
+Default production mode. Remove OCR duplication, broken line wraps, repeated headers/footers and obvious layout artefacts without changing authored wording.
 
 ### `copyedited`
 Correct language and formatting while preserving meaning. Use only when the user or journal profile explicitly allows it.
@@ -270,44 +269,20 @@ Each metadata field must use one of these policies:
 ### `extract_only`
 Never generate or rewrite. If absent, report as missing or leave blank according to profile settings.
 
-Typical examples:
-- article title
-- author list
-- abstract
-- references
-
 ### `extract_or_blank`
 Extract when present; otherwise leave blank.
-
-Typical examples:
-- ORCID
-- subtitle
-- phone number
 
 ### `extract_or_flag`
 Extract when present; otherwise flag for review.
 
-Typical examples:
-- ethics statement
-- data availability statement
-- funding disclosure
-
 ### `generate_if_missing`
-Use source value if present. Generate only when absent and generation is authorised.
-
-Typical examples:
-- issue URL path
-- short issue summary
+Use the source value if present. Generate only when absent and generation is authorised.
 
 ### `generate_always`
 Editorially generated content.
 
-Typical examples:
-- issue cover concept
-- promotional issue summary
-
 ### `ignore`
-Do not extract, request, or display.
+Do not extract, request or display.
 
 The user may override field behaviour for a single task.
 
@@ -366,33 +341,23 @@ If the profile is not configured, infer which fields appear in the user's reques
 Use the source title exactly according to the active extraction mode. Do not editorially improve article titles during metadata extraction.
 
 ### Abstracts
-Preserve section labels such as Background, Methods, Results, and Conclusion.
-
-In clean mode:
-- remove duplicated OCR lines
-- rejoin line-break hyphenation where clearly caused by layout
-- remove running headers and footers
-- preserve authored grammar
-
-If requested, provide OJS-safe HTML without changing the wording.
+Preserve section labels such as Background, Methods, Results and Conclusion. In clean mode remove duplicated OCR lines, layout-caused hyphenation and running headers/footers while preserving authored wording.
 
 ### Keywords
-Extract exact keywords and preserve spelling. Output in the user's preferred form:
-- comma-separated
-- semicolon-separated
-- one per line
+Extract exact keywords and preserve spelling. Output in the user's configured separator format.
 
 ### Article type/section
 Prefer an explicitly stated source value. If no type is stated, do not invent one unless the profile allows inference. If inferred, clearly mark it as inferred.
 
 ### Source/citation metadata
-Extract journal title, abbreviation, year, volume, issue, pages/article number, and DOI where present. Do not invent missing DOI values.
+Extract journal title, abbreviation, year, volume, issue, pages/article number and DOI where present. Do not invent missing DOI values.
 
 ## Author metadata rules
 
 Parse author order exactly as published or supplied.
 
 Attempt to map:
+
 - superscript affiliations
 - corresponding author markers
 - ORCID identifiers
@@ -406,13 +371,14 @@ Corresponding-author metadata should be matched back to the author list and affi
 ## Article history rules
 
 Extract only configured dates:
+
 - Received
 - Revised
 - Accepted
 - Published
 - Versioned
 
-Preserve display wording when extracting. If the user needs database-ready values, additionally provide ISO `YYYY-MM-DD` dates without replacing the source form.
+Preserve display wording when extracting. If database-ready values are needed, additionally provide ISO `YYYY-MM-DD` dates without replacing the source form.
 
 ## Declarations
 
@@ -433,51 +399,89 @@ Map them to configured OJS fields without paraphrasing unless copyediting is ena
 
 ## References
 
-Support the following modes:
+Support:
 
-### `exact`
-Preserve reference text exactly except unavoidable OCR/layout cleanup.
+- `exact`
+- `clean`
+- `normalize`
+- `validate`
 
-### `clean`
-Repair line wrapping, duplicated fragments, page headers/footers, and numbering while preserving bibliographic content.
-
-### `normalize`
-Apply the configured journal reference style. Only use when explicitly enabled.
-
-### `validate`
-Check numbering, duplicate references, obvious citation/reference mismatches, and malformed entries.
-
-Do not search for or insert missing DOIs unless enabled for the task.
+Do not search for or insert missing DOIs unless explicitly enabled for the task.
 
 ## Issue preparation
 
-Issue-level metadata may include:
+For `prepare_issue`, mirror the OJS editor interface and organise output into exactly these scopes unless the user asks for something else.
 
-- Date Published
-- Volume
-- Number
-- Year
-- Title
-- Description
-- Cover image/brief
-- URL Path
-- DOI
-- issue introduction
-- short summary
-- SEO description
+### Issue Data
 
-Only return configured fields.
+Core fields:
+
+- **Date Published**
+- **Identification**
+  - Volume
+  - Number
+  - Year
+  - Title
+- **Description**
+- **Cover image**
+  - Alternate text
+- **URL Path**
+
+Do not add unrelated issue fields simply because OJS or another installation may support them.
+
+The cover image file may be supplied or detected among source assets. Do not generate a replacement cover unless explicitly requested. Alternate text may be generated when authorised.
+
+### Issue Galley
+
+Core fields:
+
+- **Issue Galley** — file
+- **Galley Label**
+- **Publisher ID** — only if the journal uses an Issue Galley Publisher ID
+- **URL Path**
+
+If a complete final issue PDF has already been supplied, treat it as the candidate Issue Galley and do not ask for it again.
+
+Detect Galley Label, Publisher ID usage/pattern and URL Path convention from existing published issues, OJS exports/screenshots or journal documentation where possible.
+
+Do not invent a Publisher ID.
+
+### Identifiers
+
+Core field:
+
+- **Publisher ID** — only if the journal uses an issue-level Publisher ID
+
+This field is independent of the Issue Galley Publisher ID. Never copy the issue-level value into the galley field, or the galley value into the issue-level field, without explicit evidence that the journal intentionally uses the same value.
+
+### Issue URL path rules
+
+Treat the Issue Data URL Path and Issue Galley URL Path as separate fields. Detect the journal's established pattern for each. Do not assume the same slug is used in both scopes.
+
+### Publisher ID questionnaire logic
+
+Before asking about Publisher IDs:
+
+1. Inspect current and archived OJS issue records where available.
+2. Inspect OJS exports, screenshots or setup documentation supplied by the user.
+3. Determine separately whether Publisher IDs are used under `Identifiers` and under `Issue Galley`.
+4. Detect any stable pattern.
+
+Only if use remains unresolved, ask targeted questions:
+
+- Does this journal assign a Publisher ID to the issue itself under **Identifiers**?
+- Does this journal assign a Publisher ID to **Issue Galleys**?
+
+Only if the answer is yes and the pattern/value remains unknown should the skill ask for the expected Publisher ID or convention.
 
 ### Whole-issue synthesis rule
 
-Before generating an issue title, description, summary, or cover concept:
+Before generating an issue title, description, summary or cover concept:
 
 1. Inspect every article assigned to the issue.
-2. Build an internal article map containing article type, main topic, methods/level of translation, and major contribution.
+2. Build an internal article map containing article type, main topic, methods/level of translation and major contribution.
 3. Generate the issue-level content from the whole issue, not from one article.
 4. Do not claim themes unsupported by the included articles.
-
-If the issue contains four articles, the issue description must account for all four unless the user requests a narrower focus.
 
 ### Issue description levels
 
@@ -488,75 +492,30 @@ When configured, support:
 - `detailed`: approximately 5-7 paragraphs
 - custom word count
 
-Generated issue descriptions should be clearly treated as editorial synthesis rather than manuscript text.
+Generated issue descriptions are editorial synthesis, not manuscript text.
 
 ## Cover brief generation
 
-When requested, derive a cover concept from:
-
-- journal branding
-- issue title/theme
-- article mix
-- scientific subject matter
-- volume/issue/year
-
-Default academic cover principles:
-
-- professional research-journal appearance
-- restrained palette
-- clear hierarchy
-- journal logo/name visible
-- volume, issue, and year visible
-- issue title/theme visible when used
-- scientific imagery should tell a coherent story
-- avoid playful/cartoon aesthetics unless explicitly requested
+When requested, derive a cover concept from journal branding, issue title/theme, article mix, scientific subject matter and volume/issue/year. Do not generate or replace a supplied cover unless explicitly requested.
 
 ## OJS-safe HTML
 
 When styling content for OJS, prefer conservative HTML and inline CSS.
 
-Use:
-- `div`
-- `p`
-- `strong`
-- `em`
-- `ul`
-- `ol`
-- simple tables when necessary
+Use simple elements such as `div`, `p`, `strong`, `em`, lists and simple tables. Avoid JavaScript, external stylesheets, unsupported layout frameworks and external fonts.
 
-Avoid:
-- JavaScript
-- external stylesheets
-- unsupported layout frameworks
-- external fonts
-- unnecessary classes
-
-Example:
-
-```html
-<div style="font-family: Helvetica, Arial, sans-serif; font-size: 0.95rem; line-height: 1.7; color: #333333;">
-  <p style="margin: 0 0 1em 0; text-align: justify;">...</p>
-</div>
-```
-
-Preserve scientific typography where appropriate:
-- botanical/species names in italics
-- subscripts and superscripts
-- Greek characters
-- chemical notation
-
-Formatting must not alter scientific meaning.
+Preserve scientific typography and meaning, including species italics, Greek characters, subscripts and superscripts.
 
 ## Automatic discrepancy detection
 
-The skill should actively flag production inconsistencies, including:
+Actively flag production inconsistencies, including:
 
 - title mismatch across sources
 - author order/name mismatch
 - corresponding author mismatch
 - abstract mismatch
 - conflicting doses or units
-- rats/mice or other organism inconsistency
+- organism inconsistency
 - abbreviation inconsistency
 - licence text versus licence URL mismatch
 - journal URL mismatch
@@ -568,6 +527,9 @@ The skill should actively flag production inconsistencies, including:
 - missing declarations required by profile
 - inconsistent DOI formatting
 - conflicting publication dates
+- Issue Data URL Path conflicts
+- Issue Galley URL Path conflicts
+- Publisher ID pattern conflicts
 
 Do not automatically correct scientific discrepancies. Report them for editorial review.
 
@@ -592,9 +554,9 @@ At minimum:
 - source file or webpage
 - source location/page when available
 - confidence
-- whether value is exact, cleaned, inferred, or generated
+- whether value is exact, cleaned, inferred or generated
 
-Display provenance only when the profile output mode requests it, such as detailed or audit mode.
+Display provenance only when the profile output mode requests it.
 
 ## Missing information behaviour
 
@@ -617,39 +579,39 @@ Only field/value pairs required for the task.
 Field/value pairs plus important warnings.
 
 ### `detailed`
-Field/value pairs, warnings, provenance, and notes.
+Field/value pairs, warnings, provenance and notes.
 
 ### `audit`
-Full extraction provenance, conflicts, confidence, missing fields, and validation results.
+Full extraction provenance, conflicts, confidence, missing fields and validation results.
 
 Default to `compact` for routine QuickSubmit work unless the journal profile says otherwise.
 
 ## Per-task overrides
 
-The user may override the journal profile for a single run.
-
-Examples:
-
-- "Only give me title, abstract, keywords and authors."
-- "Do not include references this time."
-- "Use strict extraction for this article."
-- "Generate a three-paragraph issue description."
-
-Task-specific instructions take precedence over profile defaults for that run.
+Task-specific instructions take precedence over profile defaults for that run and must not permanently mutate the saved profile unless the user asks to save the override.
 
 ## Final production QA
 
-When asked to validate an issue, check at least the configured items under:
+When asked to validate an issue, check configured items under:
 
-### Issue metadata
-- volume
-- number
-- year
-- publication date
-- issue title if required
-- description if required
-- cover if required
-- URL path if required
+### Issue Data
+- Date Published
+- Volume
+- Number
+- Year
+- Title
+- Description when required
+- Cover image alternate text when a cover is used
+- URL Path
+
+### Issue Galley
+- Issue Galley file
+- Galley Label
+- Publisher ID when configured
+- URL Path
+
+### Identifiers
+- Publisher ID when configured
 
 ### Article metadata
 - title
@@ -677,7 +639,7 @@ When asked to validate an issue, check at least the configured items under:
 - journal name/abbreviation consistency
 - licence consistency
 
-Return a clear readiness state, for example:
+Return one of:
 
 - `ready`
 - `ready_with_warnings`
