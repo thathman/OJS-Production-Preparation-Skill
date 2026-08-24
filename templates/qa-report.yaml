@@ -1,4 +1,4 @@
-qa_report_version: 1
+qa_report_version: 2
 
 journal: null
 issue: null
@@ -11,32 +11,80 @@ summary:
   informational: 0
 
 issue_checks:
-  - check: volume
+  - check: date_published
+    scope: issue_data
     status: null # pass | warning | fail | not_applicable
     value: null
     source: null
     note: null
+  - check: volume
+    scope: issue_data.identification
+    status: null
+    value: null
+    source: null
+    note: null
   - check: issue_number
+    scope: issue_data.identification
     status: null
     value: null
     source: null
     note: null
   - check: year
+    scope: issue_data.identification
     status: null
     value: null
     source: null
     note: null
-  - check: publication_date
+  - check: title
+    scope: issue_data.identification
     status: null
     value: null
     source: null
     note: null
   - check: description
+    scope: issue_data
     status: null
     value: null
     source: null
     note: null
-  - check: cover
+  - check: cover_image_alternate_text
+    scope: issue_data.cover_image
+    status: null
+    value: null
+    source: null
+    note: null
+  - check: issue_url_path
+    scope: issue_data
+    status: null
+    value: null
+    source: null
+    note: null
+  - check: issue_galley_file
+    scope: issue_galley
+    status: null
+    value: null
+    source: null
+    note: null
+  - check: issue_galley_label
+    scope: issue_galley
+    status: null
+    value: null
+    source: null
+    note: null
+  - check: issue_galley_publisher_id
+    scope: issue_galley
+    status: null
+    value: null
+    source: null
+    note: null
+  - check: issue_galley_url_path
+    scope: issue_galley
+    status: null
+    value: null
+    source: null
+    note: null
+  - check: issue_publisher_id
+    scope: identifiers
     status: null
     value: null
     source: null
