@@ -1,4 +1,4 @@
-task_version: 1
+task_version: 2
 
 task:
   type: null # prepare_issue | quicksubmit_single | quicksubmit_batch | extract_article_metadata | extract_authors | extract_declarations | prepare_references | validate_metadata | generate_issue_description | generate_issue_cover_brief | style_ojs_html | production_qa | prepare_doi_metadata | full_production_workflow
@@ -23,7 +23,33 @@ issue:
   description_length: null # short | standard | detailed | custom
   description_custom_words: null
   issue_title_generation: null
-  cover_brief_generation: null
+  cover_alt_text_generation: null
+
+  data:
+    date_published: null
+    identification:
+      volume: null
+      number: null
+      year: null
+      title: null
+    description: null
+    cover_image:
+      file: null
+      alternate_text: null
+    url_path: null
+
+  galley:
+    file: null
+    label: null
+    publisher_id: null
+    url_path: null
+
+  identifiers:
+    publisher_id: null
+
+  publisher_id_usage:
+    issue_identifier: null # true | false | null
+    issue_galley: null # true | false | null
 
 references:
   mode: null # exact | clean | normalize | validate
