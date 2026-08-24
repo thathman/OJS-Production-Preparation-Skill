@@ -1,4 +1,4 @@
-profile_version: 1
+profile_version: 2
 
 journal:
   name: null
@@ -173,40 +173,70 @@ references:
   detect_duplicates: true
 
 issue:
-  fields:
+  data:
     date_published:
       enabled: true
       policy: extract_or_flag
-    volume:
-      enabled: true
-      policy: extract_or_flag
-    number:
-      enabled: true
-      policy: extract_or_flag
-    year:
-      enabled: true
-      policy: extract_or_flag
-    title:
-      enabled: false
-      policy: generate_if_missing
+    identification:
+      volume:
+        enabled: true
+        policy: extract_or_flag
+      number:
+        enabled: true
+        policy: extract_or_flag
+      year:
+        enabled: true
+        policy: extract_or_flag
+      title:
+        enabled: true
+        policy: generate_if_missing
     description:
       enabled: true
       policy: generate_if_missing
-    cover_brief:
+    cover_image:
       enabled: true
-      policy: generate_if_missing
+      file_policy: extract_or_blank
+      alternate_text:
+        enabled: true
+        policy: generate_if_missing
     url_path:
       enabled: true
       policy: generate_if_missing
-    doi:
-      enabled: false
-      policy: extract_or_blank
-    seo_description:
-      enabled: false
+      pattern: null
+
+  galley:
+    enabled: true
+    file:
+      enabled: true
+      policy: extract_or_flag
+    label:
+      enabled: true
+      policy: extract_or_flag
+      pattern: null
+    publisher_id:
+      enabled: null # true | false | null when not yet determined
+      policy: extract_or_flag
+      pattern: null
+      detect_before_asking: true
+      ask_if_undetermined: true
+    url_path:
+      enabled: true
       policy: generate_if_missing
+      pattern: null
+
+  identifiers:
+    publisher_id:
+      enabled: null # true | false | null when not yet determined
+      policy: extract_or_flag
+      pattern: null
+      detect_before_asking: true
+      ask_if_undetermined: true
+
   description_length: standard # short | standard | detailed | custom
   description_custom_words: null
   require_whole_issue_synthesis: true
+  keep_issue_and_galley_url_paths_distinct: true
+  keep_issue_and_galley_publisher_ids_distinct: true
 
 html:
   allow_inline_css: true
@@ -228,6 +258,12 @@ qa:
     unresolved_page_overlap: true
     missing_required_rights: false
     unresolved_volume_issue_conflict: true
+    missing_required_issue_galley: true
+    missing_required_issue_galley_label: true
+    missing_required_issue_url_path: false
+    missing_required_issue_galley_url_path: false
+    missing_configured_issue_publisher_id: true
+    missing_configured_issue_galley_publisher_id: true
   warnings:
     title_mismatch: true
     author_name_mismatch: true
@@ -246,6 +282,9 @@ qa:
     missing_required_declaration: true
     doi_format_mismatch: true
     publication_date_conflict: true
+    issue_url_path_conflict: true
+    issue_galley_url_path_conflict: true
+    publisher_id_pattern_conflict: true
 
 profile_state:
   status: provisional # provisional | confirmed

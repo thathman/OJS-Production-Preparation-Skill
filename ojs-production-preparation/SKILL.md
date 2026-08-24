@@ -5,7 +5,7 @@ description: Prepare Open Journal Systems (OJS) articles and issues for producti
 
 # OJS Production Preparation
 
-Use this skill for OJS post-acceptance production work, including journal setup detection, QuickSubmit preparation, article metadata extraction, author and affiliation parsing, declarations, references, issue preparation, issue descriptions, OJS-safe HTML, DOI metadata preparation, and final production QA.
+Use this skill for OJS post-acceptance production work, including journal setup detection, QuickSubmit preparation, article metadata extraction, author and affiliation parsing, declarations, references, issue preparation, issue descriptions, issue galleys, identifiers, OJS-safe HTML, DOI metadata preparation, and final production QA.
 
 ## Prime directive
 
@@ -41,7 +41,9 @@ Before asking configuration questions, attempt to detect:
 - contact emails by function
 - declarations and ethics requirements
 - citation and reference conventions
-- issue naming and URL conventions
+- issue naming and issue URL conventions
+- issue galley label and URL conventions
+- whether Publisher IDs are used for issues, issue galleys, or both
 
 Track provenance and confidence internally. If sources conflict, flag the conflict instead of silently choosing the value that seems most plausible.
 
@@ -54,8 +56,13 @@ After inspecting sources, ask only about:
 - low-confidence values that materially affect production
 - journal preferences that cannot be inferred
 - fields the user wants included, ignored or generated
+- whether a Publisher ID is used for the issue itself if this cannot be detected
+- whether a Publisher ID is used for issue galleys if this cannot be detected
+- the Publisher ID pattern/value only when the journal uses one and it cannot be inferred reliably
 
 Do not ask for confirmation of every high-confidence value unless the user requests a full profile review.
+
+Treat issue-level Publisher ID and issue-galley Publisher ID as separate fields. Never assume that because one exists the other also exists.
 
 ## Extraction modes
 
@@ -125,11 +132,57 @@ Do not guess how ambiguous multi-part names should be split. Flag ambiguous name
 
 ## Issue preparation
 
-When generating issue-level content, inspect every article assigned to the issue first. Build an internal article map covering article type, main topic, methods/level of translation and major contribution.
+When preparing an OJS issue, organise the output into the same three scopes the editor encounters in OJS.
+
+### Issue Data
+
+Prepare only these core fields unless the journal profile explicitly enables more:
+
+- **Date Published**
+- **Identification**
+  - Volume
+  - Number
+  - Year
+  - Title
+- **Description**
+- **Cover image**
+  - Alternate text
+- **URL Path**
+
+The cover image file itself may be supplied by the user or detected among uploaded assets. Do not generate a replacement image unless explicitly requested. Generate or propose alternate text when needed and authorised.
+
+### Issue Galley
+
+Prepare:
+
+- **Issue Galley** — the issue galley file
+- **Galley Label**
+- **Publisher ID** — only if the journal uses one for issue galleys
+- **URL Path**
+
+If the final issue file has already been supplied, use it as the candidate galley and do not ask for it again. Detect the galley label, Publisher ID convention and URL path convention from existing published issues or OJS evidence where possible.
+
+Do not invent a Publisher ID. If its use cannot be determined, ask whether the journal assigns Publisher IDs to issue galleys. If yes, ask for or infer the established pattern before preparing the value.
+
+### Identifiers
+
+Prepare:
+
+- **Publisher ID** — only if the journal uses an issue-level Publisher ID
+
+This is distinct from the Publisher ID attached to an Issue Galley. Detect the convention first. If it cannot be determined, ask whether the journal uses an issue-level Publisher ID and request or infer the established pattern only when the answer is yes.
+
+### Whole-issue synthesis rule
+
+When generating issue-level editorial content, inspect every article assigned to the issue first. Build an internal article map covering article type, main topic, methods/level of translation and major contribution.
 
 A whole-issue description must represent the whole issue. Do not generate a general issue description from one article unless the user explicitly requests a narrow focus.
 
 Support short, standard three-paragraph, detailed and custom-length issue descriptions.
+
+### Issue URL path rule
+
+Treat the Issue Data URL Path and the Issue Galley URL Path as separate fields. Detect each journal's established convention before generating either. Do not assume the same slug belongs in both fields.
 
 ## References
 
@@ -145,6 +198,16 @@ Preserve scientific typography and meaning, including species italics, Greek cha
 
 Actively check configured requirements for:
 
+- issue Date Published
+- issue Volume, Number, Year and Title
+- issue Description when required
+- cover image alternate text when a cover is used
+- issue URL Path
+- issue galley file presence
+- issue galley label
+- issue galley URL Path
+- issue-galley Publisher ID when configured
+- issue-level Publisher ID when configured
 - title mismatches
 - author order or spelling mismatches
 - affiliation/corresponding-author mismatches

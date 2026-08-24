@@ -231,3 +231,79 @@ These scenarios define expected skill behaviour. They are behavioural tests, not
 **But when** a required field or material conflict blocks downstream accuracy
 
 **Then** the skill asks a targeted question at that point.
+
+---
+
+## A21: Issue preparation follows OJS field groups
+
+**Given** the user asks to prepare an issue
+
+**When** `prepare_issue` runs
+
+**Then** the core output is grouped as `Issue Data`, `Issue Galley`, and `Identifiers`.
+
+**And** `Issue Data` contains Date Published; Identification with Volume, Number, Year and Title; Description; Cover image Alternate text; and URL Path.
+
+**And** `Issue Galley` contains the galley file, Galley Label, Publisher ID when configured, and URL Path.
+
+**And** `Identifiers` contains the issue-level Publisher ID when configured.
+
+---
+
+## A22: Existing whole-issue PDF becomes candidate issue galley
+
+**Given** the user already supplied the final complete issue PDF
+
+**When** issue preparation reaches the Issue Galley step
+
+**Then** that file is treated as the candidate Issue Galley.
+
+**And** the user is not asked to upload the same file again.
+
+---
+
+## A23: Publisher ID questions are conditional
+
+**Given** Publisher ID usage cannot be detected from existing OJS records, published issues, or journal documentation
+
+**When** issue preparation runs
+
+**Then** the skill asks whether the journal uses an issue-level Publisher ID and whether it uses an issue-galley Publisher ID.
+
+**And** it asks for a value or pattern only for the scope where the user confirms Publisher IDs are used.
+
+---
+
+## A24: Issue and galley Publisher IDs remain separate
+
+**Given** an issue-level Publisher ID exists
+
+**When** no evidence shows an issue-galley Publisher ID
+
+**Then** the skill does not copy the issue-level Publisher ID into the Issue Galley field.
+
+**And** the reverse is also true.
+
+---
+
+## A25: Issue and galley URL paths remain separate
+
+**Given** a journal uses one URL-path convention for issues and another for issue galleys
+
+**When** issue preparation runs
+
+**Then** both conventions are preserved independently.
+
+**And** the skill does not assume the Issue Data URL Path should be reused as the Issue Galley URL Path.
+
+---
+
+## A26: Configured Publisher ID is validated
+
+**Given** the journal profile requires a Publisher ID with an established pattern
+
+**When** production QA runs
+
+**Then** a missing required Publisher ID prevents clean readiness.
+
+**And** a value that conflicts with the established pattern is reported.

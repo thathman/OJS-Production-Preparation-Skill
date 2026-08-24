@@ -72,6 +72,8 @@ Examples:
 - different issue numbers
 - different author spellings
 - different DOI strings
+- different issue URL Path patterns
+- different Publisher ID patterns
 
 Conflicts must record:
 
@@ -130,6 +132,66 @@ Detect fields from:
 - submission templates
 
 Do not assume default OJS fields are enabled in every installation.
+
+## Issue preparation detection
+
+For issue preparation, detect the three OJS scopes separately.
+
+### Issue Data
+
+Attempt to detect:
+
+- Date Published
+- Volume
+- Number
+- Year
+- Title
+- Description convention
+- cover image use
+- cover image alternate-text convention
+- Issue Data URL Path pattern
+
+### Issue Galley
+
+Attempt to detect:
+
+- whether a complete issue galley is normally published
+- file format used for the issue galley
+- Galley Label convention
+- whether an Issue Galley Publisher ID is used
+- Issue Galley Publisher ID pattern when present
+- Issue Galley URL Path pattern
+
+A supplied complete final issue PDF should be treated as the candidate issue galley unless the user indicates otherwise.
+
+### Identifiers
+
+Attempt to detect:
+
+- whether the issue itself uses a Publisher ID under Identifiers
+- the issue-level Publisher ID pattern when present
+
+Issue-level Publisher ID and Issue Galley Publisher ID are independent. Never infer one solely from the presence of the other.
+
+### Publisher ID detection order
+
+Before asking the user about Publisher IDs:
+
+1. Inspect OJS exports or screenshots if supplied.
+2. Inspect current and archived issue records.
+3. Inspect journal setup/production documentation.
+4. Compare multiple issues for a stable identifier pattern.
+
+If Publisher ID use remains unresolved, ask separately whether the journal uses:
+
+- an issue-level Publisher ID under **Identifiers**
+- an Issue Galley Publisher ID
+
+Ask for the value or pattern only when use is confirmed and the convention is still unknown.
+
+### URL Path detection rule
+
+Detect the Issue Data URL Path and Issue Galley URL Path independently. Do not assume the same path or slug applies to both.
 
 ## Licence detection
 
@@ -211,6 +273,9 @@ When a full issue or all issue articles are available, detect:
 - issue theme if explicitly stated
 - cover style
 - volume/number/year
+- candidate Issue Galley file
+- Issue Data and Issue Galley URL conventions
+- issue-level and galley-level Publisher ID usage
 
 For generated issue summaries, create an internal article map first so every article is represented.
 
