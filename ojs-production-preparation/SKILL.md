@@ -36,6 +36,7 @@ Before asking configuration questions, attempt to detect:
 - article sections/types in actual use
 - OJS publication and metadata fields in use
 - title prefix/subtitle conventions
+- article URL Path convention
 - article galley label and URL Path conventions
 - article Publisher ID usage and pattern
 - author metadata conventions
@@ -135,6 +136,45 @@ becomes:
 
 Reconstructing `Prefix + Title + ": " + Subtitle` should reproduce the published title, aside from permitted extraction cleanup.
 
+### Publication details
+
+When requested, prepare article publication details including:
+
+- **Pages**
+- **URL Path**
+- **Date Published**
+- **DOI**
+- **Issue assignment**
+
+#### Article URL Path rule
+
+If the journal already has an established article URL Path convention, follow it.
+
+Otherwise, when generating a URL Path, create a **concise semantic summary of the title rather than a slugified copy of the full title**.
+
+Default behaviour:
+
+- aim for roughly 3–6 meaningful terms
+- use lowercase terms separated by hyphens
+- preserve the most distinctive topic, intervention/exposure, population, condition or geographic context
+- omit filler words and leading articles when they add no meaning
+- omit generic title scaffolding when the remaining terms still identify the article clearly
+- use a familiar abbreviation when it is well established by the title/article context and improves readability
+- do not automatically include the subtitle merely because it exists
+- do not reproduce every meaningful word from the title
+- do not add DOI, pages, volume or issue merely for uniqueness unless the journal convention requires it
+- check for collisions; when a collision occurs, add the smallest useful distinguishing term rather than expanding to the full title
+
+Example:
+
+`Traumatic Brain Injury Management in Nigeria: A Critical Review of Systemic Challenges and Integrated, Context-Specific Solutions`
+
+Preferred generated URL Path:
+
+`tbi-management-nigeria`
+
+Do not generate the full-title slug.
+
 ### Metadata
 
 Prepare only enabled metadata fields. Use these OJS meanings:
@@ -222,7 +262,7 @@ The galley file itself may already be supplied as part of production. If so, tre
 
 Detect the journal's established Galley Label and URL Path conventions before generating or recommending values. A normal PDF galley commonly uses `PDF` as the label, but preserve the journal's actual convention.
 
-Do not assume an article Galley URL Path should equal the article's own publication URL Path.
+Do not assume an article Galley URL Path should equal the article's own publication URL Path. The concise-title-summary rule applies to generated article publication URL Paths, not automatically to Galley URL Paths.
 
 ## QuickSubmit workflow
 
@@ -333,6 +373,9 @@ Preserve scientific typography and meaning, including species italics, Greek cha
 Actively check configured requirements for:
 
 - Prefix/Title/Subtitle parsing and reconstruction
+- generated article URL Path that simply reproduces the full title
+- generated article URL Path that is too vague to identify the article
+- duplicate/colliding article URL Paths
 - own DOI incorrectly entered as Source
 - DOI incorrectly entered as Publisher ID
 - Section incorrectly substituted for Dublin Core Type
