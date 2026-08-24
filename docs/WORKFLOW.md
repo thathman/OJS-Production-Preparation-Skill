@@ -34,6 +34,9 @@ The skill inspects the available sources and attempts to determine:
 - reference style
 - DOI conventions
 - issue and article citation patterns
+- issue URL conventions
+- issue galley label and URL conventions
+- whether Publisher IDs are used for issues, issue galleys, or both
 - formatting conventions
 
 Detected values are stored with confidence and provenance.
@@ -76,6 +79,11 @@ Typical questions:
 - Should issue descriptions be generated automatically?
 - Should missing ORCID values be blank or flagged?
 - Which contact email is used for manuscript communication?
+- Does the journal assign a Publisher ID to the issue itself under Identifiers?
+- Does the journal assign a Publisher ID to issue galleys?
+- If a Publisher ID is used, what existing pattern should be followed?
+
+Publisher ID questions are conditional. The skill must first try to detect their use and pattern from existing OJS records or published issues. Issue-level Publisher ID and issue-galley Publisher ID are independent fields and must not be conflated.
 
 ## 6. Task selection
 
@@ -88,7 +96,35 @@ Returns only configured QuickSubmit fields.
 Processes multiple manuscripts and keeps article order clear.
 
 ### Issue preparation
-Builds issue metadata, description, short summary, URL path, and cover brief if configured.
+Builds issue metadata using the OJS field groups below.
+
+#### Issue Data
+
+- Date Published
+- Identification
+  - Volume
+  - Number
+  - Year
+  - Title
+- Description
+- Cover image
+  - Alternate text
+- URL Path
+
+#### Issue Galley
+
+- Issue Galley file
+- Galley Label
+- Publisher ID, only when the journal uses one for issue galleys
+- URL Path
+
+#### Identifiers
+
+- Publisher ID, only when the journal uses an issue-level Publisher ID
+
+The Issue Data URL Path and Issue Galley URL Path are separate values. The issue-level Publisher ID and issue-galley Publisher ID are also separate values.
+
+If the complete issue PDF has already been supplied, treat it as the candidate Issue Galley file and do not ask the user to upload it again.
 
 ### Validation
 Compares prepared metadata against source material and reports discrepancies.
@@ -130,15 +166,45 @@ Before generating issue-level editorial copy:
 
 Issue-level content may be editorially generated. Article-level source metadata should remain source-faithful.
 
-## 9. OJS formatting
+## 9. Issue preparation sequence
+
+For an issue-preparation task, use this order:
+
+1. Inspect the complete issue file, cover, journal website and prior published issues.
+2. Detect the issue naming convention, issue URL Path pattern, galley label pattern, galley URL Path pattern, and Publisher ID usage.
+3. Prepare **Issue Data**.
+4. Prepare **Issue Galley**.
+5. Prepare **Identifiers**.
+6. Ask only unresolved conditional questions, especially Publisher ID usage or patterns.
+7. Validate the issue record against the source files before publication.
+
+Do not invent Publisher IDs. If a Publisher ID is configured as unused, omit it rather than showing an empty field as though it requires completion.
+
+## 10. OJS formatting
 
 Where the journal wants formatted content, the skill may output conservative OJS-safe HTML using inline CSS.
 
 Formatting should enhance readability without changing wording.
 
-## 10. Final QA
+## 11. Final QA
 
 The validation stage checks configured blocking and warning rules.
+
+Issue-level checks should include, when enabled:
+
+- Date Published
+- Volume
+- Number
+- Year
+- Title
+- Description
+- cover image alternate text
+- Issue Data URL Path
+- Issue Galley file
+- Galley Label
+- Issue Galley Publisher ID
+- Issue Galley URL Path
+- issue-level Publisher ID under Identifiers
 
 Possible blocking issues:
 
@@ -147,6 +213,9 @@ Possible blocking issues:
 - unresolved page overlap
 - missing required licence
 - issue volume/number mismatch
+- missing required issue galley
+- missing required galley label
+- missing Publisher ID when the journal profile explicitly requires one
 
 Possible warnings:
 
@@ -154,6 +223,8 @@ Possible warnings:
 - inconsistent spelling
 - reference formatting anomaly
 - publication date variance
+- issue or galley URL Path does not match the detected convention
+- Publisher ID does not match the configured pattern
 
 Final state:
 
@@ -161,6 +232,6 @@ Final state:
 - `ready_with_warnings`
 - `not_ready`
 
-## 11. Reuse
+## 12. Reuse
 
 Once confirmed, the journal profile should be reused for future issues. New source evidence can update the provisional profile, but conflicting changes should be surfaced for review rather than silently replacing existing rules.
