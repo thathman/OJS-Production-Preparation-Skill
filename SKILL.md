@@ -1,326 +1,239 @@
-# OJS Production Preparation Skill
+---
+name: ojs-production-preparation
+description: Prepare Open Journal Systems (OJS) articles and issues for production by inspecting uploaded files and journal websites first, detecting journal configuration automatically, extracting only the metadata needed for the selected task, generating only authorised editorial content, and validating publication readiness.
+---
 
-## Purpose
+# OJS Production Preparation
 
-This skill is a journal-agnostic production assistant for Open Journal Systems (OJS). It helps editors prepare accepted manuscripts and complete issues for publication without forcing a fixed metadata model onto every journal.
-
-The skill must adapt to the journal. It should detect configuration from source material first, ask only what cannot be determined confidently, and return only the information required for the selected task.
+Use this skill for OJS post-acceptance production work, including journal setup detection, article publication preparation, QuickSubmit preparation, article metadata extraction, author and affiliation parsing, declarations, references, issue preparation, issue descriptions, issue galleys, identifiers, OJS-safe HTML, DOI metadata preparation, and final production QA.
 
 ## Prime directive
 
-**Ask for sources first. Detect first. Ask second. Do not ask the user for information that can be determined reliably from provided files or the journal website.**
+Ask for sources first. Detect first. Ask second.
 
-On first use for a journal, do not begin with a full questionnaire. Ask the user to provide whatever they have, for example:
+If the user has already supplied useful files or a journal website, inspect them immediately. Do not ask the user to repeat information that can be determined reliably from those sources.
+
+If no useful source has been supplied, ask the user to provide whatever is available, such as:
 
 - journal website URL
 - sample published article PDFs
-- a complete issue PDF
+- complete issue PDFs
 - final accepted manuscripts
 - submission guidelines
-- journal policies
-- journal setup or onboarding documents
+- policy or setup documents
 - production spreadsheets
 - logos or branding files
 
-If the user has already supplied useful sources, inspect those immediately instead of asking for them again.
+Do not require every source type.
 
-## Scope
+## Source-first journal detection
 
-The skill may assist with:
+Before asking configuration questions, attempt to detect:
 
-1. Journal profile detection
-2. OJS issue preparation
-3. Issue Data preparation
-4. Issue Galley preparation
-5. Issue identifier preparation
-6. QuickSubmit preparation
-7. Article metadata extraction
-8. Author metadata extraction
-9. Article history extraction
-10. Declarations and funding extraction
-11. Reference preparation
-12. Rights and licence preparation
-13. OJS-safe HTML formatting
-14. Issue description and summary generation
-15. Issue cover briefs
-16. Production quality assurance
-17. Cross-article consistency checks
-18. Final publication readiness review
+- journal name, abbreviation, publisher and website
+- ISSN/eISSN and DOI prefix when present
+- publication model, frequency, volume/issue conventions, pagination or article-number model
+- article sections/types in actual use
+- OJS publication and metadata fields in use
+- title prefix/subtitle conventions
+- article galley label and URL Path conventions
+- article Publisher ID usage and pattern
+- author metadata conventions
+- received/revised/accepted/published history fields
+- licence and copyright policy
+- contact emails by function
+- declarations and ethics requirements
+- citation and reference conventions
+- issue naming and issue URL conventions
+- issue galley label and URL conventions
+- whether Publisher IDs are used for issues, issue galleys, articles, or any combination
 
-## Journal-agnostic behaviour
+Track provenance and confidence internally. If sources conflict, flag the conflict instead of silently choosing the value that seems most plausible.
 
-Never assume a particular journal's:
+## Gap questionnaire
 
-- licence
-- publisher
-- email addresses
-- article sections
-- citation style
-- publication frequency
-- issue model
-- DOI prefix
-- pagination model
-- metadata requirements
-- contact routing
-- reference style
-- copyright ownership
-- issue URL path convention
-- issue galley label or URL path convention
-- Publisher ID usage or pattern
-
-These must be detected from sources or confirmed by the user.
-
-## Source intake workflow
-
-### 1. Collect sources
-
-If sufficient sources are not already present, ask for the available journal materials first. Do not insist that every source type is provided.
-
-### 2. Inspect sources
-
-Inspect all relevant supplied material before asking configuration questions.
-
-Attempt to detect:
-
-#### Journal identity
-- journal name
-- abbreviated title
-- publisher
-- website
-- print ISSN
-- electronic ISSN
-- DOI prefix
-- publication language(s)
-
-#### Publication model
-- volume/issue model
-- continuous publication
-- publication frequency
-- page ranges versus article numbers
-- issue naming convention
-- issue URL convention
-
-#### Sections and article types
-- Original Article
-- Review Article
-- Narrative Review
-- Systematic Review
-- Case Report
-- Short Communication
-- Editorial
-- Commentary
-- Letter
-- Protocol
-- other journal-specific sections
-
-Only retain sections actually supported by the journal sources.
-
-#### OJS metadata conventions
-- title
-- prefix
-- subtitle
-- abstract
-- coverage
-- type
-- source
-- rights
-- data availability
-- subjects
-- disciplines
-- keywords
-- supporting agencies
-- references
-- other custom metadata
-
-#### Issue conventions
-- Date Published pattern
-- Volume/Number/Year/Title format
-- issue description style
-- cover-image use and alternate-text convention
-- Issue Data URL Path pattern
-- Issue Galley label pattern
-- Issue Galley URL Path pattern
-- whether Publisher IDs are used for issues
-- whether Publisher IDs are used for issue galleys
-- Publisher ID patterns when present
-
-#### Author metadata conventions
-- given name
-- middle name
-- family name
-- preferred public name
-- email
-- ORCID
-- affiliation
-- department
-- institution
-- city
-- state/region
-- country
-- biography
-- corresponding author
-- principal contact
-- phone number
-
-#### Article history
-- received
-- revised
-- accepted
-- published
-- version date
-
-#### Editorial and publication policies
-- copyright owner
-- Creative Commons or other licence
-- licence URL
-- open-access model
-- data availability policy
-- funding disclosure policy
-- conflict-of-interest policy
-- ethics requirements
-- consent requirements
-- author contribution policy
-- acknowledgement policy
-
-#### Contact routing
-- editorial email
-- submission email
-- production email
-- support email
-- general contact email
-- copyright/licensing email
-- technical support email
-
-#### Formatting conventions
-- reference style
-- citation pattern
-- article history display
-- issue citation format
-- abstract structure
-- keyword style
-- scientific naming conventions
-- HTML style preferences if inferable
-
-### 3. Build a provisional profile
-
-Create an internal provisional journal profile based on detected information.
-
-Each detected value should have:
-
-- value
-- source
-- confidence: `high`, `medium`, or `low`
-- conflict status
-
-### 4. Ask only the gap questionnaire
-
-After detection, ask only about:
+After inspecting sources, ask only about:
 
 - missing required configuration
 - conflicting values
 - low-confidence values that materially affect production
-- user preferences that cannot be inferred
-- fields to include or ignore
-- fields that may be editorially generated
-- whether the journal uses an issue-level Publisher ID if this cannot be detected
-- whether the journal uses an Issue Galley Publisher ID if this cannot be detected
-- the Publisher ID value or pattern only where its use is confirmed and cannot be inferred reliably
+- journal preferences that cannot be inferred
+- fields the user wants included, ignored or generated
+- whether a Publisher ID is used for the article if this cannot be detected
+- whether a Publisher ID is used for the issue itself if this cannot be detected
+- whether a Publisher ID is used for issue galleys if this cannot be detected
+- the Publisher ID pattern/value only when the relevant scope uses one and it cannot be inferred reliably
 
-Do not ask the user to confirm every high-confidence value unless they request a full profile review.
+Do not ask for confirmation of every high-confidence value unless the user requests a full profile review.
 
-Publisher ID questions are conditional. Issue-level Publisher ID and Issue Galley Publisher ID are separate fields; never infer one from the existence of the other.
-
-## Source authority and conflicts
-
-A journal profile may define a source hierarchy. If none exists, use a provisional default such as:
-
-1. Current official journal website/policy page
-2. Current journal setup or production document
-3. Final published issue/article
-4. Current submission guidelines
-5. Final accepted manuscript
-6. Submission metadata/export
-7. User preference
-
-This order is not universal. If conflicting evidence exists, report the conflict rather than silently reconciling it.
-
-Do not silently change scientific content because one source appears more plausible.
+Treat article-level Publisher ID, issue-level Publisher ID and issue-galley Publisher ID as separate fields. Never assume that because one exists the others also exist.
 
 ## Extraction modes
 
-The profile must support these modes:
+Use `clean` by default unless the user or journal profile specifies otherwise.
 
-### `strict`
-Extract exactly what appears in the source. Preserve grammar, spelling, capitalization and wording. Do not normalize content.
+- `strict`: preserve source wording exactly, including grammar, spelling and capitalization.
+- `clean`: repair OCR/layout artefacts such as duplicated lines, page headers, broken line wraps and obvious line-break hyphenation without rewriting authored wording.
+- `copyedited`: correct language and formatting while preserving meaning. Use only when explicitly allowed.
+- `hybrid`: return clean extraction and separately flag copyediting suggestions.
 
-### `clean`
-Default production mode. Remove OCR duplication, broken line wraps, repeated headers/footers and obvious layout artefacts without changing authored wording.
+Do not silently turn authored wording into improved prose during metadata extraction.
 
-### `copyedited`
-Correct language and formatting while preserving meaning. Use only when the user or journal profile explicitly allows it.
+## Field policies
 
-### `hybrid`
-Return clean extracted content and separately flag suggested editorial corrections.
+Treat each configured field as one of:
 
-## Field behaviour policies
+- `extract_only`: never generate or rewrite.
+- `extract_or_blank`: extract if present, otherwise leave blank.
+- `extract_or_flag`: extract if present, otherwise flag for review.
+- `generate_if_missing`: generate only when absent and generation is authorised.
+- `generate_always`: editorially generated content.
+- `ignore`: do not extract, request or display.
 
-Each metadata field must use one of these policies:
+Article title, author list, abstract and references should normally be source-faithful. Issue descriptions, summaries, cover concepts and URL slugs may be generated only when authorised.
 
-### `extract_only`
-Never generate or rewrite. If absent, report as missing or leave blank according to profile settings.
+## Output discipline
 
-### `extract_or_blank`
-Extract when present; otherwise leave blank.
+Return only the information required for the active task and journal profile. Do not dump every value detected simply because it is available.
 
-### `extract_or_flag`
-Extract when present; otherwise flag for review.
+For routine article publication or QuickSubmit work, preserve the field order used by the user's OJS installation when known and return compact field/value output plus important warnings.
 
-### `generate_if_missing`
-Use the source value if present. Generate only when absent and generation is authorised.
+## Article publication preparation
 
-### `generate_always`
-Editorially generated content.
+When preparing an existing OJS submission for publication, organise the relevant values into the OJS-facing scopes below. Do not mix the meaning of fields merely because their values look similar.
 
-### `ignore`
-Do not extract, request or display.
+### Title and abstract
 
-The user may override field behaviour for a single task.
+Prepare:
 
-## Task selection
+- **Prefix**
+- **Title**
+- **Subtitle**
+- **Abstract**
 
-Once the journal profile is sufficiently complete, ask what production task to perform if the user has not already specified it.
+#### Prefix, Title and Subtitle rule
 
-Supported tasks include:
+Use the first colon in the published title as the Title/Subtitle separator when the journal follows this convention.
 
-- `prepare_issue`
-- `quicksubmit_single`
-- `quicksubmit_batch`
-- `extract_article_metadata`
-- `extract_authors`
-- `extract_declarations`
-- `prepare_references`
-- `validate_metadata`
-- `generate_issue_description`
-- `generate_issue_cover_brief`
-- `style_ojs_html`
-- `production_qa`
-- `prepare_doi_metadata`
-- `full_production_workflow`
+- Anything before the first colon belongs to the main title.
+- Anything after the first colon belongs to the Subtitle.
+- Do not include the separating colon in either field.
+- If the main title begins with the standalone article `A`, `An` or `The`, move that leading article into **Prefix** and remove it from **Title**.
+- A leading `A`, `An` or `The` inside the Subtitle stays in the Subtitle and is not a Prefix.
+- If there is no subtitle colon, leave Subtitle blank.
+- If there is no leading main-title article, leave Prefix blank.
 
-Return only the fields required by the journal profile and task.
+Example:
+
+`The Effects of X on Y: A Systematic Review`
+
+becomes:
+
+- Prefix: `The`
+- Title: `Effects of X on Y`
+- Subtitle: `A Systematic Review`
+
+Reconstructing `Prefix + Title + ": " + Subtitle` should reproduce the published title, aside from permitted extraction cleanup.
+
+### Metadata
+
+Prepare only enabled metadata fields. Use these OJS meanings:
+
+#### Keywords
+
+Keywords are typically one- to three-word phrases indicating the main topics of a submission.
+
+- Preserve author-supplied keywords exactly in source-faithful extraction modes, even if an author's keyword is longer than three words.
+- If keyword generation is explicitly authorised because the source has none, prefer concise one- to three-word phrases.
+- Do not turn the abstract into a long list of phrases merely to fill the field.
+
+#### Supporting Agencies
+
+Supporting Agencies indicate research funding or other institutional support that facilitated the research.
+
+- Extract explicit funders, sponsors, grant agencies or other stated institutional support.
+- Do not copy author affiliations into Supporting Agencies merely because an institution appears in the author list.
+- If no support is stated, follow the journal's missing-value policy.
+
+#### Coverage
+
+Coverage typically describes one or more of:
+
+- spatial location, such as a place name or geographic coordinates
+- temporal period, such as a period label, date or date range
+- jurisdiction, such as a named administrative entity
+
+Do not use Coverage as a general subject/topic field. Extract or infer geographic, temporal or jurisdictional coverage only when supported and allowed by the profile.
+
+#### Rights
+
+Rights record rights held over the submission, including copyright, intellectual-property rights, licence rights or other property rights.
+
+- Prefer explicit article rights statements and the journal's authoritative rights/licence policy according to source precedence.
+- Keep copyright holder, copyright year, licence name and licence URL conceptually distinct even if OJS presents a single Rights field.
+- Do not put a DOI in Rights.
+
+#### Source
+
+Source identifies another work or resource from which the submission is derived. It may be an identifier, including a DOI, for that source work.
+
+- Do not put the submission's own DOI in Source.
+- Do not automatically put the journal citation in Source.
+- Populate Source only when the submission is explicitly derived from, based on, translated from, reproduced from, or otherwise linked as a derivative of another identifiable work/resource, or when the journal has an established Source convention.
+- If no such source exists, leave the field blank according to the profile.
+
+#### Type
+
+Type describes the nature or genre of the submission's main content using Dublin Core-style resource types.
+
+- For a conventional journal article, editorial, review, commentary or other textual manuscript, `Text` is normally the appropriate Type.
+- Other valid types may include `Dataset`, `Image` or another Dublin Core type when the main content actually has that nature.
+- Do not use the OJS editorial section name such as `Editorial`, `Original Article` or `Review Article` as Type merely because that is the submission's section.
+- Section and Type are separate concepts.
+
+#### Data Availability Statement
+
+This is a short statement describing whether the authors made the research data available and, if so, where readers can access it.
+
+- Extract the authors' statement when present.
+- Do not invent a data-sharing claim, repository, accession number or availability status.
+- Do not convert the absence of a statement into `Data not available` unless the journal explicitly authorises that wording.
+
+### Identifiers
+
+Prepare:
+
+- **Publisher ID** — only if the journal uses an article-level Publisher ID
+
+The Publisher ID may record an identifier from an external database or deposit workflow, for example an identifier associated with PubMed export/deposit.
+
+**Never use Publisher ID for the submission DOI.** DOI and Publisher ID are separate identifiers.
+
+Detect article-level Publisher ID usage and pattern from OJS exports, existing submissions, screenshots or journal documentation. If use cannot be determined, ask whether the journal uses it. If not used, omit it.
+
+### Galleys
+
+For an article galley, the core OJS information to prepare is:
+
+- **Galley Label** — required when OJS requires it
+- **URL Path**
+
+The galley file itself may already be supplied as part of production. If so, treat that PDF/HTML/XML file as the candidate galley without asking for it again.
+
+Detect the journal's established Galley Label and URL Path conventions before generating or recommending values. A normal PDF galley commonly uses `PDF` as the label, but preserve the journal's actual convention.
+
+Do not assume an article Galley URL Path should equal the article's own publication URL Path.
 
 ## QuickSubmit workflow
 
-For QuickSubmit, preserve the field order used by the user's OJS installation when known.
-
-Potential fields include:
+For QuickSubmit, potential fields include:
 
 - Section
 - Prefix
 - Title
 - Subtitle
 - Abstract
-- Coverage Information
+- Coverage
 - Type
 - Source
 - Rights
@@ -333,88 +246,31 @@ Potential fields include:
 
 Do not include disabled or ignored fields.
 
-If the profile is not configured, infer which fields appear in the user's request or OJS screenshots/forms, then ask only about genuinely ambiguous fields.
+Apply the article-publication metadata definitions above. In particular, do not confuse Section with Type, the submission DOI with Source, or DOI with Publisher ID.
 
 ## Article metadata rules
 
-### Titles
-Use the source title exactly according to the active extraction mode. Do not editorially improve article titles during metadata extraction.
+Titles, abstracts, keywords, references and declarations must come from the supplied source unless the user explicitly requests copyediting or generation.
 
-### Abstracts
-Preserve section labels such as Background, Methods, Results and Conclusion. In clean mode remove duplicated OCR lines, layout-caused hyphenation and running headers/footers while preserving authored wording.
+Preserve structured abstract labels such as Background, Methods, Results and Conclusion.
 
-### Keywords
-Extract exact keywords and preserve spelling. Output in the user's configured separator format.
+Do not invent article DOI, ORCID, funding, ethics approval, data availability, affiliation, corresponding-author details or Publisher ID when they are absent.
 
-### Article type/section
-Prefer an explicitly stated source value. If no type is stated, do not invent one unless the profile allows inference. If inferred, clearly mark it as inferred.
+If an article section/type is inferred rather than explicitly stated, mark it as inferred. A Dublin Core Type of `Text` may be marked inferred when the supplied main content is unambiguously a textual journal submission.
 
-### Source/citation metadata
-Extract journal title, abbreviation, year, volume, issue, pages/article number and DOI where present. Do not invent missing DOI values.
+## Author and affiliation rules
 
-## Author metadata rules
+Preserve author order exactly. Map superscript affiliations, corresponding-author markers, ORCIDs, emails and phone numbers where possible.
 
-Parse author order exactly as published or supplied.
-
-Attempt to map:
-
-- superscript affiliations
-- corresponding author markers
-- ORCID identifiers
-- email addresses
-- phone numbers
-
-Do not guess how a multi-part personal name should be split if the source structure is ambiguous. Flag it for review.
-
-Corresponding-author metadata should be matched back to the author list and affiliation where possible.
-
-## Article history rules
-
-Extract only configured dates:
-
-- Received
-- Revised
-- Accepted
-- Published
-- Versioned
-
-Preserve display wording when extracting. If database-ready values are needed, additionally provide ISO `YYYY-MM-DD` dates without replacing the source form.
-
-## Declarations
-
-Search for common labels and equivalents:
-
-- Data availability
-- Funding
-- Supporting agencies
-- Competing interests
-- Conflict of interest
-- Ethical approval
-- Consent for publication
-- Author contributions
-- Acknowledgements
-- Trial registration
-
-Map them to configured OJS fields without paraphrasing unless copyediting is enabled.
-
-## References
-
-Support:
-
-- `exact`
-- `clean`
-- `normalize`
-- `validate`
-
-Do not search for or insert missing DOIs unless explicitly enabled for the task.
+Do not guess how ambiguous multi-part names should be split. Flag ambiguous name parsing for review.
 
 ## Issue preparation
 
-For `prepare_issue`, mirror the OJS editor interface and organise output into exactly these scopes unless the user asks for something else.
+When preparing an OJS issue, organise the output into the same three scopes the editor encounters in OJS.
 
 ### Issue Data
 
-Core fields:
+Prepare only these core fields unless the journal profile explicitly enables more:
 
 - **Date Published**
 - **Identification**
@@ -427,234 +283,116 @@ Core fields:
   - Alternate text
 - **URL Path**
 
-Do not add unrelated issue fields simply because OJS or another installation may support them.
-
-The cover image file may be supplied or detected among source assets. Do not generate a replacement cover unless explicitly requested. Alternate text may be generated when authorised.
+The cover image file itself may be supplied by the user or detected among uploaded assets. Do not generate a replacement image unless explicitly requested. Generate or propose alternate text when needed and authorised.
 
 ### Issue Galley
 
-Core fields:
+Prepare:
 
-- **Issue Galley** — file
+- **Issue Galley** — the issue galley file
 - **Galley Label**
-- **Publisher ID** — only if the journal uses an Issue Galley Publisher ID
+- **Publisher ID** — only if the journal uses one for issue galleys
 - **URL Path**
 
-If a complete final issue PDF has already been supplied, treat it as the candidate Issue Galley and do not ask for it again.
+If the final issue file has already been supplied, use it as the candidate galley and do not ask for it again. Detect the galley label, Publisher ID convention and URL path convention from existing published issues or OJS evidence where possible.
 
-Detect Galley Label, Publisher ID usage/pattern and URL Path convention from existing published issues, OJS exports/screenshots or journal documentation where possible.
-
-Do not invent a Publisher ID.
+Do not invent a Publisher ID. If its use cannot be determined, ask whether the journal assigns Publisher IDs to issue galleys. If yes, ask for or infer the established pattern before preparing the value.
 
 ### Identifiers
 
-Core field:
+Prepare:
 
 - **Publisher ID** — only if the journal uses an issue-level Publisher ID
 
-This field is independent of the Issue Galley Publisher ID. Never copy the issue-level value into the galley field, or the galley value into the issue-level field, without explicit evidence that the journal intentionally uses the same value.
-
-### Issue URL path rules
-
-Treat the Issue Data URL Path and Issue Galley URL Path as separate fields. Detect the journal's established pattern for each. Do not assume the same slug is used in both scopes.
-
-### Publisher ID questionnaire logic
-
-Before asking about Publisher IDs:
-
-1. Inspect current and archived OJS issue records where available.
-2. Inspect OJS exports, screenshots or setup documentation supplied by the user.
-3. Determine separately whether Publisher IDs are used under `Identifiers` and under `Issue Galley`.
-4. Detect any stable pattern.
-
-Only if use remains unresolved, ask targeted questions:
-
-- Does this journal assign a Publisher ID to the issue itself under **Identifiers**?
-- Does this journal assign a Publisher ID to **Issue Galleys**?
-
-Only if the answer is yes and the pattern/value remains unknown should the skill ask for the expected Publisher ID or convention.
+This is distinct from both the article-level Publisher ID and the Publisher ID attached to an Issue Galley. Detect the convention first. If it cannot be determined, ask whether the journal uses an issue-level Publisher ID and request or infer the established pattern only when the answer is yes.
 
 ### Whole-issue synthesis rule
 
-Before generating an issue title, description, summary or cover concept:
+When generating issue-level editorial content, inspect every article assigned to the issue first. Build an internal article map covering article type, main topic, methods/level of translation and major contribution.
 
-1. Inspect every article assigned to the issue.
-2. Build an internal article map containing article type, main topic, methods/level of translation and major contribution.
-3. Generate the issue-level content from the whole issue, not from one article.
-4. Do not claim themes unsupported by the included articles.
+A whole-issue description must represent the whole issue. Do not generate a general issue description from one article unless the user explicitly requests a narrow focus.
 
-### Issue description levels
+Support short, standard three-paragraph, detailed and custom-length issue descriptions.
 
-When configured, support:
+### Issue URL path rule
 
-- `short`: approximately 75-150 words
-- `standard`: approximately 3 paragraphs
-- `detailed`: approximately 5-7 paragraphs
-- custom word count
+Treat the Issue Data URL Path and the Issue Galley URL Path as separate fields. Detect each journal's established convention before generating either. Do not assume the same slug belongs in both fields.
 
-Generated issue descriptions are editorial synthesis, not manuscript text.
+## References
 
-## Cover brief generation
-
-When requested, derive a cover concept from journal branding, issue title/theme, article mix, scientific subject matter and volume/issue/year. Do not generate or replace a supplied cover unless explicitly requested.
+Support exact, clean, normalize and validate modes. Do not insert missing DOIs unless DOI enrichment is explicitly enabled.
 
 ## OJS-safe HTML
 
-When styling content for OJS, prefer conservative HTML and inline CSS.
+When styling content for OJS, prefer conservative HTML and inline CSS. Use simple elements such as `div`, `p`, `strong`, `em`, lists and simple tables. Avoid JavaScript, external stylesheets, external fonts and framework-dependent markup.
 
-Use simple elements such as `div`, `p`, `strong`, `em`, lists and simple tables. Avoid JavaScript, external stylesheets, unsupported layout frameworks and external fonts.
+Preserve scientific typography and meaning, including species italics, Greek characters, subscripts and superscripts where appropriate.
 
-Preserve scientific typography and meaning, including species italics, Greek characters, subscripts and superscripts.
+## Production QA
 
-## Automatic discrepancy detection
+Actively check configured requirements for:
 
-Actively flag production inconsistencies, including:
-
-- title mismatch across sources
-- author order/name mismatch
-- corresponding author mismatch
-- abstract mismatch
-- conflicting doses or units
-- organism inconsistency
-- abbreviation inconsistency
+- Prefix/Title/Subtitle parsing and reconstruction
+- own DOI incorrectly entered as Source
+- DOI incorrectly entered as Publisher ID
+- Section incorrectly substituted for Dublin Core Type
+- Supporting Agencies incorrectly populated from affiliations without support evidence
+- Coverage used as a topic rather than spatial/temporal/jurisdictional metadata
+- unsupported or invented Data Availability statements
+- article galley label
+- article galley URL Path when configured
+- issue Date Published
+- issue Volume, Number, Year and Title
+- issue Description when required
+- cover image alternate text when a cover is used
+- issue URL Path
+- issue galley file presence
+- issue galley label
+- issue galley URL Path
+- issue-galley Publisher ID when configured
+- issue-level Publisher ID when configured
+- title mismatches
+- author order or spelling mismatches
+- affiliation/corresponding-author mismatches
+- abstract mismatches
+- inconsistent doses, units, organisms or abbreviations
 - licence text versus licence URL mismatch
-- journal URL mismatch
-- volume/issue mismatch
-- page-range overlap
-- duplicate pagination
-- article type mismatch
+- journal URL/name mismatch
+- volume/issue/year mismatch
+- pagination overlap or duplicate article numbers
 - malformed references
-- missing declarations required by profile
-- inconsistent DOI formatting
+- missing required declarations
+- DOI formatting conflicts
 - conflicting publication dates
-- Issue Data URL Path conflicts
-- Issue Galley URL Path conflicts
-- Publisher ID pattern conflicts
 
 Do not automatically correct scientific discrepancies. Report them for editorial review.
 
-## Pagination and issue consistency
-
-For issue-level QA, check:
-
-- article order
-- first and last page
-- overlapping page ranges
-- gaps when the journal expects continuous pagination
-- duplicate article numbers
-- volume/issue/year consistency
-- issue citation consistency
-
-## Provenance
-
-Internally track the source for every extracted field.
-
-At minimum:
-
-- source file or webpage
-- source location/page when available
-- confidence
-- whether value is exact, cleaned, inferred or generated
-
-Display provenance only when the profile output mode requests it.
-
-## Missing information behaviour
-
-The journal profile should define one of:
-
-- `blank`
-- `not_stated`
-- `flag`
-- `ask`
-- `generate_if_allowed`
-
-Do not invent article metadata merely to avoid an empty field.
-
-## Output modes
-
-### `compact`
-Only field/value pairs required for the task.
-
-### `standard`
-Field/value pairs plus important warnings.
-
-### `detailed`
-Field/value pairs, warnings, provenance and notes.
-
-### `audit`
-Full extraction provenance, conflicts, confidence, missing fields and validation results.
-
-Default to `compact` for routine QuickSubmit work unless the journal profile says otherwise.
-
-## Per-task overrides
-
-Task-specific instructions take precedence over profile defaults for that run and must not permanently mutate the saved profile unless the user asks to save the override.
-
-## Final production QA
-
-When asked to validate an issue, check configured items under:
-
-### Issue Data
-- Date Published
-- Volume
-- Number
-- Year
-- Title
-- Description when required
-- Cover image alternate text when a cover is used
-- URL Path
-
-### Issue Galley
-- Issue Galley file
-- Galley Label
-- Publisher ID when configured
-- URL Path
-
-### Identifiers
-- Publisher ID when configured
-
-### Article metadata
-- title
-- authors
-- affiliations
-- corresponding author
-- abstract
-- keywords
-- section/type
-- pagination/article number
-- publication date
-- DOI
-- rights/licence
-- funding
-- data availability
-- ethics/consent where required
-- references
-- galley presence if information is available
-
-### Cross-article checks
-- volume/issue consistency
-- page range consistency
-- article numbering
-- publication-date consistency
-- journal name/abbreviation consistency
-- licence consistency
-
-Return one of:
+For issue QA, return one of:
 
 - `ready`
 - `ready_with_warnings`
 - `not_ready`
 
-Do not mark an issue ready when a configured blocking requirement is unresolved.
+Do not mark an issue ready while a configured blocking requirement is unresolved.
 
-## Safety against unnecessary work
+## Supported tasks
 
-The skill must not extract or generate everything simply because it can.
+Use the smallest task that satisfies the request:
 
-The sequence is:
+- prepare issue
+- prepare article publication record
+- prepare one QuickSubmit article
+- prepare batch QuickSubmit metadata
+- extract article metadata
+- extract authors/affiliations
+- extract declarations
+- prepare or validate references
+- validate existing OJS metadata
+- generate issue description
+- generate cover brief
+- style OJS HTML
+- prepare DOI metadata
+- run production QA
+- run full production workflow
 
-1. Detect broadly.
-2. Configure narrowly.
-3. Output only what is needed.
-
-This is a core design requirement.
+User instructions for the current task override profile defaults for that run.
