@@ -27,6 +27,9 @@ The skill inspects the available sources and attempts to determine:
 - issue structure
 - article sections
 - metadata fields in use
+- Prefix/Title/Subtitle convention
+- article galley label and URL conventions
+- article Publisher ID usage
 - author metadata expectations
 - article history conventions
 - copyright/licensing
@@ -36,7 +39,7 @@ The skill inspects the available sources and attempts to determine:
 - issue and article citation patterns
 - issue URL conventions
 - issue galley label and URL conventions
-- whether Publisher IDs are used for issues, issue galleys, or both
+- whether Publisher IDs are used for articles, issues, issue galleys, or any combination
 - formatting conventions
 
 Detected values are stored with confidence and provenance.
@@ -51,6 +54,8 @@ Examples:
 - issue archive uses `1(1)` while sample PDF says `Vol. 1 No. 2`
 - author name differs between title page and citation block
 - abstract dose differs from Methods dose
+- an article DOI has been entered into Publisher ID
+- a submission's own DOI has been entered into Source
 
 Scientific conflicts are never silently corrected.
 
@@ -76,6 +81,7 @@ Typical questions:
 
 - Which of two conflicting licence statements is authoritative?
 - Does the journal require a data availability statement in OJS metadata?
+- Does the journal use article-level Publisher IDs from an external database/deposit workflow?
 - Should issue descriptions be generated automatically?
 - Should missing ORCID values be blank or flagged?
 - Which contact email is used for manuscript communication?
@@ -83,19 +89,70 @@ Typical questions:
 - Does the journal assign a Publisher ID to issue galleys?
 - If a Publisher ID is used, what existing pattern should be followed?
 
-Publisher ID questions are conditional. The skill must first try to detect their use and pattern from existing OJS records or published issues. Issue-level Publisher ID and issue-galley Publisher ID are independent fields and must not be conflated.
+Publisher ID questions are conditional. The skill must first try to detect their use and pattern from existing OJS records or journal documentation. Article-level, issue-level and issue-galley Publisher IDs are independent fields and must not be conflated with each other or with DOI.
 
 ## 6. Task selection
 
 The skill supports focused tasks rather than always running the entire workflow.
 
+### Article publication preparation
+
+For an existing OJS submission, prepare the publication record in OJS-facing groups:
+
+#### Title and Abstract
+
+- Prefix
+- Title
+- Subtitle
+- Abstract
+
+When the journal uses the configured convention, split the first colon into Title and Subtitle. Move only a leading main-title `A`, `An` or `The` into Prefix. Do not move a leading article from the Subtitle.
+
+#### Metadata
+
+- Keywords
+- Supporting Agencies
+- Coverage
+- Rights
+- Source
+- Type
+- Data Availability Statement
+
+Use the semantics in `docs/ARTICLE-PUBLICATION-METADATA.md`.
+
+Critical distinctions:
+
+- Keywords are normally concise topic phrases; preserve authored keywords exactly.
+- Supporting Agencies means funding or other explicit research support, not ordinary author affiliations.
+- Coverage means spatial, temporal or jurisdictional coverage, not general subject matter.
+- Rights records rights held over the submission.
+- Source identifies another work/resource from which the submission is derived; it is not the submission's own DOI.
+- Type is a Dublin Core-style content type. Ordinary journal manuscripts are normally `Text`; OJS Section is separate.
+- Data Availability must come from author/journal evidence and must not be invented.
+
+#### Identifiers
+
+- Publisher ID, only when the journal uses an article-level external-database/deposit identifier
+
+Never use DOI as Publisher ID.
+
+#### Galleys
+
+- Galley Label
+- URL Path
+
+If the final article galley file is already supplied, treat it as the candidate galley and do not request it again. Galley URL Path is distinct from the article's publication URL Path.
+
 ### QuickSubmit single article
-Returns only configured QuickSubmit fields.
+
+Returns only configured QuickSubmit fields using the same article metadata semantics above.
 
 ### QuickSubmit batch
+
 Processes multiple manuscripts and keeps article order clear.
 
 ### Issue preparation
+
 Builds issue metadata using the OJS field groups below.
 
 #### Issue Data
@@ -127,21 +184,27 @@ The Issue Data URL Path and Issue Galley URL Path are separate values. The issue
 If the complete issue PDF has already been supplied, treat it as the candidate Issue Galley file and do not ask the user to upload it again.
 
 ### Validation
+
 Compares prepared metadata against source material and reports discrepancies.
 
 ### Full production workflow
-Runs issue setup, article extraction, QA, and readiness review.
+
+Runs issue setup, article extraction/publication preparation, QA and readiness review.
 
 ## 7. Article processing
 
 For each article:
 
 1. Identify the authoritative manuscript/version.
-2. Extract configured metadata.
-3. Clean only layout/OCR artefacts according to extraction mode.
-4. Track provenance.
-5. Flag conflicts.
-6. Return only requested/configured fields.
+2. Determine the OJS Section separately from Dublin Core Type.
+3. Parse Prefix, Title and Subtitle according to the journal's configured rule.
+4. Extract configured metadata using the OJS field meanings.
+5. Prepare article Identifiers without using DOI as Publisher ID.
+6. Prepare Galley Label and URL Path using the journal's established convention.
+7. Clean only layout/OCR artefacts according to extraction mode.
+8. Track provenance.
+9. Flag conflicts.
+10. Return only requested/configured fields.
 
 Recommended default field policy:
 
@@ -150,8 +213,13 @@ Recommended default field policy:
 - Abstract: `extract_only`
 - Keywords: `extract_only`
 - ORCID: `extract_or_blank`
-- Funding: `extract_or_flag`
+- Supporting Agencies: `extract_or_blank`
+- Coverage: `extract_or_blank`
+- Rights: `extract_or_flag`
+- Source: `extract_or_blank`
+- Type: `extract_or_flag`
 - Data availability: `extract_or_flag`
+- Publisher ID: conditional, `extract_or_flag`
 - References: `extract_only`
 
 ## 8. Whole-issue synthesis
@@ -171,7 +239,7 @@ Issue-level content may be editorially generated. Article-level source metadata 
 For an issue-preparation task, use this order:
 
 1. Inspect the complete issue file, cover, journal website and prior published issues.
-2. Detect the issue naming convention, issue URL Path pattern, galley label pattern, galley URL Path pattern, and Publisher ID usage.
+2. Detect the issue naming convention, issue URL Path pattern, galley label pattern, galley URL Path pattern and Publisher ID usage.
 3. Prepare **Issue Data**.
 4. Prepare **Issue Galley**.
 5. Prepare **Identifiers**.
@@ -189,6 +257,19 @@ Formatting should enhance readability without changing wording.
 ## 11. Final QA
 
 The validation stage checks configured blocking and warning rules.
+
+Article-level checks should include, when enabled:
+
+- Prefix/Title/Subtitle reconstruction
+- submission DOI not used as Source
+- DOI not used as Publisher ID
+- Section not substituted for Dublin Core Type
+- Supporting Agencies supported by actual funding/support evidence
+- Coverage limited to spatial/temporal/jurisdictional meaning
+- Data Availability wording supported by sources
+- Galley Label
+- Galley URL Path
+- article Publisher ID pattern when used
 
 Issue-level checks should include, when enabled:
 
@@ -210,20 +291,27 @@ Possible blocking issues:
 
 - missing required title
 - missing required author
+- DOI used as Publisher ID
+- missing required article Galley Label
 - unresolved page overlap
 - missing required licence
 - issue volume/number mismatch
 - missing required issue galley
-- missing required galley label
+- missing required issue galley label
 - missing Publisher ID when the journal profile explicitly requires one
 
 Possible warnings:
 
 - no ORCID
+- submission DOI entered in Source
+- Section used as Type
+- unsupported Supporting Agency
+- invalid Coverage semantics
+- invented Data Availability wording
 - inconsistent spelling
 - reference formatting anomaly
 - publication date variance
-- issue or galley URL Path does not match the detected convention
+- article, issue or galley URL Path does not match the detected convention
 - Publisher ID does not match the configured pattern
 
 Final state:

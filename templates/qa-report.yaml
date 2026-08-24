@@ -1,4 +1,4 @@
-qa_report_version: 2
+qa_report_version: 3
 
 journal: null
 issue: null
@@ -90,7 +90,75 @@ issue_checks:
     source: null
     note: null
 
-article_checks: []
+article_checks:
+  - article: null
+    checks:
+      - check: prefix_title_subtitle
+        scope: title_and_abstract
+        status: null
+        value: null
+        source: null
+        note: null
+      - check: keywords
+        scope: metadata
+        status: null
+        value: null
+        source: null
+        note: null
+      - check: supporting_agencies
+        scope: metadata
+        status: null
+        value: null
+        source: null
+        note: null
+      - check: coverage
+        scope: metadata
+        status: null
+        value: null
+        source: null
+        note: null
+      - check: rights
+        scope: metadata
+        status: null
+        value: null
+        source: null
+        note: null
+      - check: source
+        scope: metadata
+        status: null
+        value: null
+        source: null
+        note: null
+      - check: type
+        scope: metadata
+        status: null
+        value: null
+        source: null
+        note: null
+      - check: data_availability_statement
+        scope: metadata
+        status: null
+        value: null
+        source: null
+        note: null
+      - check: publisher_id
+        scope: identifiers
+        status: null
+        value: null
+        source: null
+        note: null
+      - check: galley_label
+        scope: galley
+        status: null
+        value: null
+        source: null
+        note: null
+      - check: galley_url_path
+        scope: galley
+        status: null
+        value: null
+        source: null
+        note: null
 
 cross_article_checks:
   - check: pagination_overlap
@@ -109,6 +177,26 @@ cross_article_checks:
     status: null
     note: null
   - check: journal_name_consistency
+    status: null
+    note: null
+
+semantic_checks:
+  - check: own_doi_not_used_as_source
+    status: null
+    note: null
+  - check: doi_not_used_as_publisher_id
+    status: null
+    note: null
+  - check: section_not_used_as_dublin_core_type
+    status: null
+    note: null
+  - check: supporting_agencies_have_support_evidence
+    status: null
+    note: null
+  - check: coverage_is_spatial_temporal_or_jurisdictional
+    status: null
+    note: null
+  - check: data_availability_not_invented
     status: null
     note: null
 

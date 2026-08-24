@@ -1,7 +1,7 @@
-task_version: 2
+task_version: 3
 
 task:
-  type: null # prepare_issue | quicksubmit_single | quicksubmit_batch | extract_article_metadata | extract_authors | extract_declarations | prepare_references | validate_metadata | generate_issue_description | generate_issue_cover_brief | style_ojs_html | production_qa | prepare_doi_metadata | full_production_workflow
+  type: null # prepare_issue | prepare_article_publication | quicksubmit_single | quicksubmit_batch | extract_article_metadata | extract_authors | extract_declarations | prepare_references | validate_metadata | generate_issue_description | generate_issue_cover_brief | style_ojs_html | production_qa | prepare_doi_metadata | full_production_workflow
   journal_profile: null
 
 sources:
@@ -18,6 +18,41 @@ overrides:
   missing_value_behavior: null # blank | not_stated | flag | ask | generate_if_allowed
   allow_generation_for: []
   forbid_generation_for: []
+
+article:
+  section: null
+
+  title_and_abstract:
+    prefix: null
+    title: null
+    subtitle: null
+    abstract: null
+
+  metadata:
+    keywords: null
+    supporting_agencies: null
+    coverage: null
+    rights: null
+    source: null
+    type: null
+    data_availability_statement: null
+
+  identifiers:
+    publisher_id: null
+
+  publisher_id_usage:
+    article_identifier: null # true | false | null
+
+  galley:
+    file: null
+    label: null
+    url_path: null
+
+  publication:
+    pages: null
+    date_published: null
+    doi: null
+    issue_assignment: null
 
 issue:
   description_length: null # short | standard | detailed | custom
