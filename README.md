@@ -32,6 +32,7 @@ Typical source material includes:
 - issue cover briefs
 - existing-submission article publication records
 - Prefix, Title, Subtitle and Abstract
+- publication details including Pages and article URL Path
 - OJS metadata: Keywords, Supporting Agencies, Coverage, Rights, Source, Type and Data Availability Statement
 - article Publisher ID when the journal uses an external-database/deposit identifier
 - article Galley Label and URL Path
@@ -56,6 +57,26 @@ The skill keeps semantically different OJS fields separate:
 - **Coverage** is spatial, temporal or jurisdictional metadata rather than a generic subject field.
 - **Supporting Agencies** records funding or other explicit research support, not ordinary affiliations.
 - Article URL Path, article Galley URL Path, Issue Data URL Path and Issue Galley URL Path are distinct scopes.
+
+## Article URL Path strategy
+
+When a journal has an established article URL Path convention, the skill follows it.
+
+Otherwise, generated article URL Paths use a **concise semantic summary of the title**, not a slugified copy of the complete title. The default aims for roughly 3–6 meaningful terms, preserves the most distinctive topic/context, removes filler wording, and checks for collisions before finalising a path.
+
+Example:
+
+`Traumatic Brain Injury Management in Nigeria: A Critical Review of Systemic Challenges and Integrated, Context-Specific Solutions`
+
+Preferred:
+
+`tbi-management-nigeria`
+
+Not preferred:
+
+`traumatic-brain-injury-management-in-nigeria-a-critical-review-of-systemic-challenges-and-integrated-context-specific-solutions`
+
+If a collision occurs, the skill adds the smallest useful distinguishing term rather than expanding to the complete title.
 
 ## Behaviour model
 
@@ -89,7 +110,7 @@ It also separates extraction from editorial generation. Article metadata is norm
 - `ojs-production-preparation/` — installable runtime skill package
 - `docs/WORKFLOW.md` — end-to-end production workflow
 - `docs/DETECTION.md` — automatic detection and confidence rules
-- `docs/ARTICLE-PUBLICATION-METADATA.md` — OJS article metadata, Identifiers and Galley semantics
+- `docs/ARTICLE-PUBLICATION-METADATA.md` — OJS article metadata, URL Path, Identifiers and Galley semantics
 - `templates/journal-profile.yaml` — reusable journal configuration
 - `templates/task-request.yaml` — per-task overrides
 - `templates/qa-report.yaml` — validation/reporting structure
@@ -105,12 +126,13 @@ It also separates extraction from editorial generation. Article metadata is norm
 - Explicit source provenance
 - Strong discrepancy detection
 - Correct OJS field semantics
+- Concise, meaningful generated article URL Paths
 - Conservative OJS-compatible HTML
 - Reusable journal profiles
 - Per-task overrides
 
 ## Status
 
-Installable runtime version: **1.0.2**.
+Installable runtime version: **1.0.3**.
 
-The current runtime includes issue preparation and explicit existing-submission article publication preparation, including title/prefix/subtitle parsing, OJS metadata semantics, article-level Publisher ID handling and article Galley Label/URL Path preparation.
+The current runtime includes issue preparation and explicit existing-submission article publication preparation, including title/prefix/subtitle parsing, concise semantic article URL Paths, OJS metadata semantics, article-level Publisher ID handling and article Galley Label/URL Path preparation.
