@@ -1,4 +1,4 @@
-profile_version: 2
+profile_version: 3
 
 journal:
   name: null
@@ -63,6 +63,90 @@ output:
   html: plain_text # plain_text | ojs_html | both
   keyword_separator: comma # comma | semicolon | line
 
+article_publication:
+  title_structure:
+    split_subtitle_on_first_colon: true
+    strip_separator_colon: true
+    prefix_terms:
+      - A
+      - An
+      - The
+    move_leading_main_title_article_to_prefix: true
+    keep_subtitle_leading_article_in_subtitle: true
+    require_reconstruction_match: true
+
+  metadata:
+    keywords:
+      enabled: true
+      policy: extract_only
+      generated_phrase_length_words:
+        min: 1
+        max: 3
+      preserve_longer_author_supplied_keywords: true
+    supporting_agencies:
+      enabled: true
+      policy: extract_or_blank
+      include_funding_sources: true
+      include_explicit_institutional_support: true
+      never_copy_affiliation_without_support_evidence: true
+    coverage:
+      enabled: true
+      policy: extract_or_blank
+      allowed_dimensions:
+        - spatial
+        - temporal
+        - jurisdictional
+      never_use_as_general_topic_field: true
+    rights:
+      enabled: true
+      policy: extract_or_flag
+      may_include:
+        - copyright
+        - intellectual_property_rights
+        - licence_rights
+        - property_rights
+      never_use_for_doi: true
+    source:
+      enabled: true
+      policy: extract_or_blank
+      meaning: derived_from_work_or_resource
+      may_use_source_work_identifier: true
+      never_use_submission_own_doi: true
+      never_auto_copy_submission_citation: true
+    type:
+      enabled: true
+      policy: extract_or_flag
+      vocabulary: dublin_core
+      default_for_unambiguously_textual_journal_submission: Text
+      keep_separate_from_ojs_section: true
+    data_availability_statement:
+      enabled: true
+      policy: extract_or_flag
+      never_invent_availability_status: true
+      never_invent_repository_or_accession: true
+
+  identifiers:
+    publisher_id:
+      enabled: null # true | false | null when not yet determined
+      policy: extract_or_flag
+      purpose: external_database_or_deposit_identifier
+      pattern: null
+      detect_before_asking: true
+      ask_if_undetermined: true
+      never_use_for_doi: true
+
+  galley:
+    label:
+      enabled: true
+      required: true
+      policy: extract_or_flag
+      pattern: null
+    url_path:
+      enabled: true
+      policy: generate_if_missing
+      pattern: null
+    keep_galley_url_path_distinct_from_article_url_path: true
+
 quicksubmit:
   preserve_interface_order: true
   fields:
@@ -70,25 +154,25 @@ quicksubmit:
       enabled: true
       policy: extract_or_flag
     prefix:
-      enabled: false
+      enabled: true
       policy: extract_or_blank
     title:
       enabled: true
       policy: extract_only
     subtitle:
-      enabled: false
+      enabled: true
       policy: extract_or_blank
     abstract:
       enabled: true
       policy: extract_only
     coverage_information:
-      enabled: false
-      policy: ignore
+      enabled: true
+      policy: extract_or_blank
     type:
       enabled: true
       policy: extract_or_flag
     source:
-      enabled: false
+      enabled: true
       policy: extract_or_blank
     rights:
       enabled: true
@@ -256,20 +340,30 @@ qa:
     missing_required_title: true
     missing_required_author: true
     unresolved_page_overlap: true
-    missing_required_rights: false
     unresolved_volume_issue_conflict: true
+    missing_required_article_galley_label: true
+    doi_used_as_publisher_id: true
     missing_required_issue_galley: true
     missing_required_issue_galley_label: true
     missing_required_issue_url_path: false
     missing_required_issue_galley_url_path: false
+    missing_configured_article_publisher_id: true
     missing_configured_issue_publisher_id: true
     missing_configured_issue_galley_publisher_id: true
   warnings:
     title_mismatch: true
+    prefix_title_subtitle_parse_mismatch: true
     author_name_mismatch: true
     author_order_mismatch: true
     corresponding_author_mismatch: true
     abstract_mismatch: true
+    own_doi_used_as_source: true
+    section_used_as_type: true
+    unsupported_supporting_agency: true
+    invalid_coverage_semantics: true
+    invented_data_availability: true
+    article_galley_url_path_conflict: true
+    article_publisher_id_pattern_conflict: true
     scientific_value_conflict: true
     organism_inconsistency: true
     abbreviation_inconsistency: true
