@@ -1,4 +1,4 @@
-qa_report_version: 3
+qa_report_version: 4
 
 journal: null
 issue: null
@@ -99,6 +99,12 @@ article_checks:
         value: null
         source: null
         note: null
+      - check: article_url_path
+        scope: publication
+        status: null
+        value: null
+        source: null
+        note: null
       - check: keywords
         scope: metadata
         status: null
@@ -161,6 +167,9 @@ article_checks:
         note: null
 
 cross_article_checks:
+  - check: article_url_path_collision
+    status: null
+    note: null
   - check: pagination_overlap
     status: null
     note: null
@@ -181,6 +190,15 @@ cross_article_checks:
     note: null
 
 semantic_checks:
+  - check: generated_article_url_is_concise_title_summary
+    status: null
+    note: null
+  - check: generated_article_url_is_not_full_title_slug
+    status: null
+    note: null
+  - check: generated_article_url_is_specific_enough
+    status: null
+    note: null
   - check: own_doi_not_used_as_source
     status: null
     note: null

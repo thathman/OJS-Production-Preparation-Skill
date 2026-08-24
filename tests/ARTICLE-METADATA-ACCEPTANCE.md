@@ -147,3 +147,23 @@ These scenarios supplement `tests/ACCEPTANCE.md` for OJS article-publication pre
 **Then** the two paths remain independent.
 
 **And** the article URL is not automatically copied into Galley URL Path.
+
+---
+
+## AM12: Generated article URL Path summarizes the title
+
+**Given** the title is `Traumatic Brain Injury Management in Nigeria: A Critical Review of Systemic Challenges and Integrated, Context-Specific Solutions`
+
+**When** the journal permits a generated article URL Path and has no stronger established article-path convention
+
+**Then** the skill proposes a short semantic summary such as `tbi-management-nigeria`.
+
+**And** it does not slugify the full title.
+
+**And** it normally targets roughly 3–6 meaningful terms.
+
+**And** it checks for path collisions before finalising the suggestion.
+
+**If** a collision exists
+
+**Then** it adds the smallest useful distinguishing term rather than expanding to the complete title.

@@ -19,12 +19,17 @@ When the OJS interface supports these fields, prepare the article in this order:
    - Source
    - Type
    - Data Availability Statement
-7. Identifiers
+7. Publication details
+   - Pages
+   - URL Path
+   - Date Published
+   - DOI
+   - Issue assignment
+8. Identifiers
    - Publisher ID, only when used
-8. Galleys
+9. Galleys
    - Galley Label
    - URL Path
-9. Publication details such as pages, date published, DOI and issue assignment when requested
 
 ## Prefix, Title and Subtitle
 
@@ -48,6 +53,37 @@ becomes:
 - Subtitle: `A Systematic Review`
 
 The reconstructed display title should match the source title.
+
+## Article URL Path
+
+When the journal permits a generated article URL Path and does not already have a stronger established pattern, generate a **short semantic summary of the article title**, not a slugified copy of the complete title.
+
+Default behaviour:
+
+- aim for roughly **3–6 meaningful terms**
+- use lowercase words separated by hyphens
+- preserve the article's most distinctive topic, intervention/exposure, population, condition or geographic context
+- omit filler words and leading articles such as `a`, `an` and `the` when they add no meaning
+- omit generic title scaffolding such as `a study of`, `an assessment of`, `effects of`, `prevalence of`, `review of` or similar phrases when the remaining terms still identify the article clearly
+- a familiar abbreviation may be used when it is well established by the title/article context and improves readability
+- do not automatically include the subtitle merely because it exists
+- do not reproduce every meaningful word from the title
+- do not include the DOI, page range, volume or issue merely to make the slug unique unless the journal's established convention requires it
+- check for collisions with other article paths; if a collision occurs, add the smallest useful distinguishing term rather than expanding to the full title
+
+Example:
+
+`Traumatic Brain Injury Management in Nigeria: A Critical Review of Systemic Challenges and Integrated, Context-Specific Solutions`
+
+Preferred generated URL Path:
+
+`tbi-management-nigeria`
+
+Not preferred:
+
+`traumatic-brain-injury-management-in-nigeria-a-critical-review-of-systemic-challenges-and-integrated-context-specific-solutions`
+
+A journal's established article URL convention overrides this default summary strategy.
 
 ## Metadata definitions
 
@@ -136,7 +172,7 @@ A supplied final PDF/HTML/XML file may be treated as the candidate galley withou
 
 Detect the journal's actual label convention. `PDF` is common but should not override an established journal-specific label.
 
-The Galley URL Path is distinct from the article publication URL Path and should follow the journal's existing pattern when one exists.
+The Galley URL Path is distinct from the article publication URL Path and should follow the journal's existing pattern when one exists. The concise-title-summary rule applies to generated **article publication URL Paths**, not automatically to Galley URL Paths.
 
 ## QA rules
 
@@ -145,6 +181,9 @@ Flag at minimum:
 - title/subtitle colon left in the Title field
 - main-title Prefix left attached to Title when the journal uses Prefix
 - title reconstruction mismatch
+- generated article URL Path that simply reproduces the complete title
+- generated article URL Path that is too vague to identify the article
+- duplicate/colliding article URL Paths
 - submission DOI used as Source
 - any DOI used as Publisher ID merely because an identifier field is empty
 - Section name used as Dublin Core Type

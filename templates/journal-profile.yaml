@@ -1,4 +1,4 @@
-profile_version: 3
+profile_version: 4
 
 journal:
   name: null
@@ -19,6 +19,18 @@ publication:
   pagination: null # page_range | article_number | elocation | none
   issue_url_pattern: null
   article_url_pattern: null
+  article_url_generation:
+    strategy: concise_title_summary
+    target_terms_min: 3
+    target_terms_max: 6
+    separator: hyphen
+    lowercase: true
+    omit_filler_terms: true
+    omit_leading_articles_when_safe: true
+    preserve_distinctive_topic_terms: true
+    allow_familiar_abbreviations: true
+    never_slugify_full_title: true
+    collision_resolution: add_minimal_distinguishing_term
 
 sections: []
 
@@ -353,6 +365,9 @@ qa:
   warnings:
     title_mismatch: true
     prefix_title_subtitle_parse_mismatch: true
+    article_url_path_full_title_slug: true
+    article_url_path_too_vague: true
+    duplicate_article_url_path: true
     author_name_mismatch: true
     author_order_mismatch: true
     corresponding_author_mismatch: true
