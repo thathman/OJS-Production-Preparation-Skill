@@ -99,6 +99,45 @@ Return only the information required for the active task and journal profile. Do
 
 For routine article publication or QuickSubmit work, preserve the field order used by the user's OJS installation when known and return compact field/value output plus important warnings.
 
+### Required article response order
+
+For **article publication preparation**, the user-facing response must be grouped in this exact order unless the user explicitly requests another structure:
+
+1. **Title & Abstract**
+2. **Contributors**
+3. **Metadata**
+4. **References**
+5. **Galleys**
+6. **Issue**
+
+Use the groups as follows:
+
+#### 1. Title & Abstract
+
+Include Section, Prefix, Title, Subtitle and Abstract when applicable.
+
+#### 2. Contributors
+
+List every contributor in publication order. Include only source-supported fields such as given name, middle name/initials, family name, preferred/public name, email, affiliation, country, ORCID and corresponding-author status.
+
+#### 3. Metadata
+
+Include enabled OJS metadata fields such as Keywords, Supporting Agencies, Coverage, Rights, Source, Type, Data Availability Statement and article-level Publisher ID when the journal uses one. Publisher ID remains semantically an identifier, but in this six-step user-facing response place it under **Metadata** rather than adding a separate top-level Identifiers group.
+
+#### 4. References
+
+When references are available in the supplied source, paste the **complete copy-ready reference list**, not merely the number of references or a note saying they should be entered. Flag numbering anomalies, duplicates, malformed entries or unnumbered references without silently changing substantive bibliographic content unless the active reference mode permits it.
+
+#### 5. Galleys
+
+Include the candidate galley file when known, Galley Label and Galley URL Path.
+
+#### 6. Issue
+
+Include Issue assignment, Pages, Date Published, DOI and Article URL Path when applicable. The article URL Path belongs in this **Issue** group in the user-facing six-step response.
+
+Do not move Issue details above Metadata, put References after Issue, or create a seventh top-level Identifiers group unless the user explicitly requests a different structure.
+
 ## Article publication preparation
 
 When preparing an existing OJS submission for publication, organise the relevant values into the OJS-facing scopes below. Do not mix the meaning of fields merely because their values look similar.
@@ -362,6 +401,8 @@ Treat the Issue Data URL Path and the Issue Galley URL Path as separate fields. 
 
 Support exact, clean, normalize and validate modes. Do not insert missing DOIs unless DOI enrichment is explicitly enabled.
 
+When references are available in the supplied article source and the active task is article publication preparation, return the complete copy-ready reference list under the **References** step rather than only a count or placeholder.
+
 ## OJS-safe HTML
 
 When styling content for OJS, prefer conservative HTML and inline CSS. Use simple elements such as `div`, `p`, `strong`, `em`, lists and simple tables. Avoid JavaScript, external stylesheets, external fonts and framework-dependent markup.
@@ -372,6 +413,9 @@ Preserve scientific typography and meaning, including species italics, Greek cha
 
 Actively check configured requirements for:
 
+- article publication response groups in the wrong order
+- missing full reference list when source references are available
+- missing Pages or article URL Path when required
 - Prefix/Title/Subtitle parsing and reconstruction
 - generated article URL Path that simply reproduces the full title
 - generated article URL Path that is too vague to identify the article

@@ -167,3 +167,32 @@ These scenarios supplement `tests/ACCEPTANCE.md` for OJS article-publication pre
 **If** a collision exists
 
 **Then** it adds the smallest useful distinguishing term rather than expanding to the complete title.
+
+---
+
+## AM13: Article publication response follows the editor's six-step order
+
+**Given** an article publication record is being prepared
+
+**When** the skill returns the user-facing OJS record
+
+**Then** the top-level groups appear in exactly this order:
+
+1. `Title & Abstract`
+2. `Contributors`
+3. `Metadata`
+4. `References`
+5. `Galleys`
+6. `Issue`
+
+**And** Section, Prefix, Title, Subtitle and Abstract appear under `Title & Abstract`.
+
+**And** all contributors are returned in publication order under `Contributors`.
+
+**And** article Publisher ID, when used, is displayed under `Metadata` rather than as a seventh top-level group.
+
+**And** the complete reference list is pasted under `References` when the source contains references.
+
+**And** Galley file, Galley Label and Galley URL Path appear under `Galleys`.
+
+**And** Issue assignment, Pages, Date Published, DOI and article URL Path appear under `Issue`.
